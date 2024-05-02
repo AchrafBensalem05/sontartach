@@ -19,6 +19,7 @@ db.pipeSegment = require("./pipeSegment")
 db.type= require("./type")
 db.well = require("./well")
 db.wellType= require("./wellType")
+// db.welll = require("./well2")
 
 
 db.ROLES = ["user", "admin", "moderator"];

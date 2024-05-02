@@ -43,7 +43,7 @@ require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 // require("./app/routes/well.routes")
 
-const wellRoutes = require('./app/routes/well.routes'); // Import the wellRoutes
+const wellRoutes = require('./app/routes/well.routes');
 const Well = require('./app/models/well'); // Import the Well model
 const pipeRoutes = require('./app/routes/pipe.routes'); // Import the wellRoutes
 const Pipe = require('./app/models/pipe');

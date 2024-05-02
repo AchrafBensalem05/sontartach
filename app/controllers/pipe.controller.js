@@ -40,6 +40,67 @@ const createPipe = async (req, res) => {
   }
 };
 
-module.exports = {
-  createPipe
-};
+// Controller function to get all Pipes
+const getAllPipes = async (req, res) => {
+    try {
+      const pipes = await Pipe.find();
+      res.status(200).json(pipes);
+    } catch (error) {
+      console.error('Error getting Pipes:', error);
+      res.status(500).json({ error: 'Failed to get Pipes' });
+    }
+  };
+  
+  // Controller function to get a specific Pipe by ID
+  const getPipeById = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const pipe = await Pipe.findById(id);
+      if (!pipe) {
+        return res.status(404).json({ error: 'Pipe not found' });
+      }
+      res.status(200).json(pipe);
+    } catch (error) {
+      console.error('Error getting Pipe by ID:', error);
+      res.status(500).json({ error: 'Failed to get Pipe' });
+    }
+  };
+  
+  // Controller function to update a Pipe by ID
+  const updatePipeById = async (req, res) => {
+    const { id } = req.params;
+    const updateData = req.body;
+    try {
+      const updatedPipe = await Pipe.findByIdAndUpdate(id, updateData, { new: true });
+      if (!updatedPipe) {
+        return res.status(404).json({ error: 'Pipe not found' });
+      }
+      res.status(200).json(updatedPipe);
+    } catch (error) {
+      console.error('Error updating Pipe by ID:', error);
+      res.status(500).json({ error: 'Failed to update Pipe' });
+    }
+  };
+  
+  // Controller function to delete a Pipe by ID
+  const deletePipeById = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const deletedPipe = await Pipe.findByIdAndDelete(id);
+      if (!deletedPipe) {
+        return res.status(404).json({ error: 'Pipe not found' });
+      }
+      res.status(200).json({ message: 'Pipe deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting Pipe by ID:', error);
+      res.status(500).json({ error: 'Failed to delete Pipe' });
+    }
+  };
+  
+  module.exports = {
+    createPipe,
+    getAllPipes,
+    getPipeById,
+    updatePipeById,
+    deletePipeById
+  };

@@ -51,3 +51,26 @@ Content-Type: application/json
   "type": "collect",
   "nature": "oil"
 }
+
+######
+POST http://localhost:8080/well/create-well
+Content-Type: application/json
+
+{
+  "name": "Well 3",
+  "attributes": [
+    { "name": "gor", "value": 40 },
+    { "name": "oil", "value": 500 },
+    { "name": "gas", "value": 200 },
+    { "name":"order_date", "value":"21-12-2001"},
+    {"name":"hello","value":"vvv"}
+
+  ],
+  "centre":"blahhhbal",
+  "region":"blahhbla",
+  "wilaya":"blahhhblbaa",
+  "zone":"blbhhhlb",
+  "longitude": 46.123,
+  "latitude": 45.678,
+  "elevation": 100
+}
