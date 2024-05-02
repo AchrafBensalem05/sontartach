@@ -20,3 +20,34 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8080/api/test/admin
+#########
+##
+POST http://localhost:8080/well/create-well
+Content-Type: application/json
+
+{
+  "centre": "Sample Centre",
+  "region": "Sample Region",
+  "zone": "Sample Zone",
+  "wilaya": "Sample Wilaya",
+  "longitude": 46.123,
+  "latitude": 45.678,
+  "elevation": 100,
+  "order_date": "2024-05-05",
+  "gor": 10,
+  "oil": 20,
+  "gas": 30
+}
+#########
+
+POST http://localhost:8080/pipe/create-pipe
+Content-Type: application/json
+
+{
+  "from_id": "6633a2bff02a70c6bac82ee6",
+  "to_id": "6633a2c7f02a70c6bac82eee",
+  "length": 100,
+  "connectionType": "direct",
+  "type": "collect",
+  "nature": "oil"
+}

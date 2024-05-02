@@ -4,7 +4,6 @@ const nature = require('./nature')
 const type = require('./type')
 
 const pipeSchema = new mongoose.Schema({
-  ID: { type: Number, required: true },
   from_id: { type: mongoose.Schema.Types.ObjectId, ref:"Infrastracture" },
   to_id: { type: mongoose.Schema.Types.ObjectId,ref:"Infrastracture"},
   length: { type: Number },
