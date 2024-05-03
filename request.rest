@@ -57,13 +57,40 @@ POST http://localhost:8080/well/create-well
 Content-Type: application/json
 
 {
-  "name": "Well 3",
+  "name": "Well 5",
   "attributes": [
     { "name": "gor", "value": 40 },
     { "name": "oil", "value": 500 },
     { "name": "gas", "value": 200 },
     { "name":"order_date", "value":"21-12-2001"},
-    {"name":"hello","value":"vvv"}
+    {"name":"hello","value":"vvv"},
+    {"name":"islam","value":"benchiba"}
+
+  ],
+  "centre":"blahhhbal",
+  "region":"blahhbla",
+  "wilaya":"blahhhblbaa",
+  "zone":"blbhhhlb",
+  "longitude": 46.123,
+  "latitude": 45.678,
+  "elevation": 100
+}
+
+
+
+######    
+POST http://localhost:8080/manufold/create-manufold
+Content-Type: application/json
+
+{
+  "name": "manufold 1",
+  "attributes": [
+    { "name": "temp", "value": 40 },
+    { "name": "press", "value": 500 },
+    { "name": "kach7aja", "value": 200 },
+    { "name":"order_date", "value":"21-12-2001"},
+    {"name":"hello","value":"vvv"},
+    {"name":"islam","value":"benchiba"}
 
   ],
   "centre":"blahhhbal",
