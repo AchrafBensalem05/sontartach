@@ -15,7 +15,7 @@ router.get('/', manufoldController.getAllManufolds);
 router.get('/:id', manufoldController.getManufoldById);
 
 // Route to update a manufold by ID
-router.put('/:id', manufoldController.updateManufoldById);
+router.patch('/:id', manufoldController.updateManufoldById);
 
 // Route to delete a manufold by ID
 

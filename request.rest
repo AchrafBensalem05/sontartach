@@ -76,7 +76,20 @@ Content-Type: application/json
   "elevation": 100
 }
 
+###### 
+PATCH http://localhost:8080/well/6633d0ebb0710cd83a14a0d2
+Content-Type: application/json
 
+{
+    "name":"edited well",
+    "attributes":[
+        {"name":"gor", "value": "88"},
+        {"name":"oil", "value":22},
+        {"name":"achraf", "value":77},
+        {"name":"order_date", "value":"12-12-2001"},
+        {"name":"hello", "value":"haha"}
+    ]
+}
 
 ######    
 POST http://localhost:8080/manufold/create-manufold
@@ -100,4 +113,19 @@ Content-Type: application/json
   "longitude": 46.123,
   "latitude": 45.678,
   "elevation": 100
+}
+
+###### 
+PATCH http://localhost:8080/manufold/6634f5f8784e71ac338103aa
+Content-Type: application/json
+
+{
+    "name":"edited manufold",
+    "attributes":[
+        {"name":"gor", "value": "88"},
+        {"name":"oil", "value":22},
+        {"name":"achraf", "value":77},
+        {"name":"order_date", "value":"12-12-2001"},
+        {"name":"hello", "value":"haha"}
+    ]
 }

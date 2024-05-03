@@ -15,7 +15,7 @@ router.get('/', wellController.getAllWells);
 router.get('/:id', wellController.getWellById);
 
 // Route to update a Well by ID
-router.put('/:id', wellController.updateWellById);
+router.patch('/:id', wellController.updateWellById);
 
 // Route to delete a Well by ID
 

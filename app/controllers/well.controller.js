@@ -2,13 +2,13 @@ const Well = require('../models/well'); // Import the Well model
 const Infrastracture = require('../models/infrastracture'); // Import the Infrastracture model
 const Coord = require('../models/coord'); // Import the Coord model
 const Address = require('../models/address'); // Import the Address model
+const mongoose = require('mongoose');
 
 // Controller function to handle creating a new Well, Infrastracture, Coord, and Address
 const createWell = async (req, res) => {
   try {
     // Extract data from the request body
     const { name, attributes, centre, region, zone, wilaya, longitude, latitude, elevation } = req.body;
-console.log(centre,region,zone,wilaya);
     // Create a new Address document
     const newAddress = new Address({
       centre,
@@ -96,25 +96,36 @@ const getWellById = async (req, res) => {
 /////////
 const updateWellById = async (req, res) => {
   const { id } = req.params;
-  const { centre, region, zone, wilaya, longitude, latitude, elevation, order_date, gor, oil, gas } = req.body;
+  const { name, attributes } = req.body;
   try {
-    const well = await Well.findByIdAndUpdate(id, {
-      centre,
-      region,
-      zone,
-      wilaya,
-      longitude,
-      latitude,
-      elevation,
-      order_date,
-      gor,
-      oil,
-      gas
-    }, { new: true });
+    // Check if the provided ID is a valid ObjectId string
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid Well ID' });
+    }
+
+    // Find the Well document by ID
+    const well = await Well.findById(id);
     if (!well) {
       return res.status(404).json({ error: 'Well not found' });
     }
-    res.status(200).json(well);
+
+    // Update Well properties if provided
+    if (name) well.name = name;
+    // Update dynamic attributes if provided
+    if (attributes && Array.isArray(attributes) && attributes.length > 0) {
+      attributes.forEach(({ name, value }) => {
+        const existingAttribute = well.attributes.find(attr => attr.name === name);
+        if (existingAttribute) {
+          existingAttribute.value = value;
+        } else {
+          well.attributes.push({ name, value });
+        }
+      });
+    }
+    // Save the updated Well document
+    const updatedWell = await well.save();
+
+    res.status(200).json(updatedWell);
   } catch (error) {
     console.error('Error updating Well:', error);
     res.status(500).json({ error: 'Failed to update Well' });

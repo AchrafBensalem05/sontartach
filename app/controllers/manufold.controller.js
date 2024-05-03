@@ -2,14 +2,12 @@ const Manufold = require('../models/manufold'); // Import the manufold model
 const Infrastracture = require('../models/infrastracture'); // Import the Infrastracture model
 const Coord = require('../models/coord'); // Import the Coord model
 const Address = require('../models/address'); // Import the Address model
-
+const mongoose = require('mongoose');
 // Controller function to handle creating a new manufold, Infrastracture, Coord, and Address
 const createManufold = async (req, res) => {
   try {
     // Extract data from the request body
     const { name, attributes, centre, region, zone, wilaya, longitude, latitude, elevation } = req.body;
-console.log(centre,region,zone,wilaya);
-console.log(req.body)
     // Create a new Address document
     const newAddress = new Address({
       centre,
@@ -97,28 +95,39 @@ const getManufoldById = async (req, res) => {
 /////////
 const updateManufoldById = async (req, res) => {
   const { id } = req.params;
-  const { centre, region, zone, wilaya, longitude, latitude, elevation, order_date, gor, oil, gas } = req.body;
+  const { name, attributes } = req.body;
   try {
-    const manufold = await Manufold.findByIdAndUpdate(id, {
-      centre,
-      region,
-      zone,
-      wilaya,
-      longitude,
-      latitude,
-      elevation,
-      order_date,
-      gor,
-      oil,
-      gas
-    }, { new: true });
-    if (!manufold) {
-      return res.status(404).json({ error: 'manufold not found' });
+    // Check if the provided ID is a valid ObjectId string
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid Manufold ID' });
     }
-    res.status(200).json(manufold);
+
+    // Find the Manufold document by ID
+    const manufold = await Manufold.findById(id);
+    if (!manufold) {
+      return res.status(404).json({ error: 'Manufold not found' });
+    }
+
+    // Update Manufold properties if provided
+    if (name) manufold.name = name;
+    // Update dynamic attributes if provided
+    if (attributes && Array.isArray(attributes) && attributes.length > 0) {
+      attributes.forEach(({ name, value }) => {
+        const existingAttribute = manufold.attributes.find(attr => attr.name === name);
+        if (existingAttribute) {
+          existingAttribute.value = value;
+        } else {
+          manufold.attributes.push({ name, value });
+        }
+      });
+    }
+    // Save the updated Manufold document
+    const updatedManufold = await manufold.save();
+
+    res.status(200).json(updatedManufold);
   } catch (error) {
-    console.error('Error updating manufold:', error);
-    res.status(500).json({ error: 'Failed to update manufold' });
+    console.error('Error updating Manufold:', error);
+    res.status(500).json({ error: 'Failed to update Manufold' });
   }
 };
 
