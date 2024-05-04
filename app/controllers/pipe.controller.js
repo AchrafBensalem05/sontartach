@@ -1,6 +1,7 @@
 const mongoose = require('mongoose'); // Import mongoose module
 const Pipe = require('../models/pipe'); // Import the Pipe model
-const Coord = require('../models/coord')
+const Coord = require('../models/coord');
+const PipeSegment = require('../models/pipeSegment'); // Adjust the path as per your project structure
 const Infrastracture = require('../models/infrastracture'); // Import the Infrastracture model
 
 // Controller function to handle creating a new Pipe
@@ -46,7 +47,7 @@ const Infrastracture = require('../models/infrastracture'); // Import the Infras
 const createPipe = async (req, res) => {
   try {
     // Extract data from the request body
-    const { from_id, to_id, coords, length, connectionType, type, nature } = req.body;
+    const { from_id, to_id, coords, length, connectionType, type, nature, segments } = req.body;
       if (!mongoose.Types.ObjectId.isValid(from_id) || !mongoose.Types.ObjectId.isValid(to_id)) {
       return res.status(400).json({ error: 'Invalid ObjectId provided' });
     }
@@ -59,13 +60,15 @@ const createPipe = async (req, res) => {
     }
     // Function to create or find existing coordinates
     const createOrFindCoord = async (coordData) => {
-      const { longitude, latitude, elevation } = coordData;
-
+      const { longitude, latitude } = coordData;
+      const existingCoord = await Coord.findOne({ longitude, latitude });
+      if (existingCoord) {
+        return existingCoord._id;
+      }
       // Check if a Coord document with the same coordinates exists
         const newCoord = new Coord({
           longitude,
-          latitude,
-          elevation
+          latitude
           // Assign the Address ID to the Coord
         });
 
@@ -93,12 +96,36 @@ const createPipe = async (req, res) => {
 
     // Save the new Pipe document to the database
     const savedPipe = await newPipe.save();
+// Create segments for the pipe
+const createSegments = async () => {
+  const createdSegments = [];
+  for (const segmentData of segments) {
+    const { coords, attributes } = segmentData;
+    const coordIds = await Promise.all(coords.map(createOrFindCoord));
 
-    res.status(201).json(savedPipe);
-  } catch (error) {
-    console.error('Error creating Pipe:', error);
-    res.status(500).json({ error: 'Failed to create Pipe' });
+    // Create a new segment document
+    const newSegment = new PipeSegment({
+      pipeId: savedPipe._id,
+      coor_id: coordIds,
+      attributes
+    });
+
+    // Save the new segment document to the database
+    const savedSegment = await newSegment.save();
+    createdSegments.push(savedSegment);
   }
+  return createdSegments;
+};
+
+
+
+const createdSegments = await createSegments();
+
+res.status(201).json({ pipe: savedPipe, segments: createdSegments });
+} catch (error) {
+console.error('Error creating Pipe:', error);
+res.status(500).json({ error: 'Failed to create Pipe and Segments' });
+}
 };
 
 

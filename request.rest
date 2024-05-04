@@ -161,3 +161,120 @@ Content-Type: application/json
         {"name":"hello", "value":"haha"}
     ]
 }
+##########
+GET http://localhost:8080/pipe
+#########
+POST http://localhost:8080/pipe/create-pipe
+Content-Type: application/json
+
+{
+  "from_id": "6633d0ebb0710cd83a14a0d0",
+  "to_id": "6633d314a75a82fe3736a184",
+  "length": 100,
+    "coords": [
+        [ 
+            { 
+                "latitude": 31.788951233790343, 
+                "longitude": 5.405648285672383 
+            }, 
+            { 
+                "latitude": 31.79711946380753, 
+                "longitude": 5.516862796954007 
+            }, 
+            { 
+                "latitude": 31.72941806467556, 
+                "longitude": 5.666521830653997 
+            }, 
+            { 
+                "latitude": 31.739926700242876, 
+                "longitude": 5.75988709938427 
+            }, 
+            { 
+                "latitude": 31.694380672626355, 
+                "longitude": 5.87659368529709 
+            }, 
+            { 
+                "latitude": 31.780782282009984, 
+                "longitude": 5.953482730133777 
+            }, 
+            { 
+                "latitude": 31.82745228305688, 
+                "longitude": 6.020760644365884 
+            }, 
+            { 
+                "latitude": 31.870601037773323, 
+                "longitude": 6.088038558597991 
+            }, 
+            { 
+                "latitude": 31.911398841789094, 
+                "longitude": 6.122364025042928 
+            } 
+        ] ],
+    "connectionType": "direct",
+    "type": "collect",
+    "nature": "oil",
+    "segments":[
+        {
+            "coords": [[
+                { 
+                    "latitude": 31.788951233790343, 
+                    "longitude": 5.405648285672383 
+                }, 
+                { 
+                    "latitude": 31.79711946380753, 
+                    "longitude": 5.516862796954007 
+                }, 
+                { 
+                    "latitude": 31.72941806467556, 
+                    "longitude": 5.666521830653997 
+                }
+            ]],
+            "attributes":[
+                {"name":"gor", "value": "88"},
+                {"name":"oil", "value":22},
+                {"name":"achraf", "value":77},
+                {"name":"order_date", "value":"12-12-2001"},
+                {"name":"hello", "value":"haha"}
+            ]
+        },
+        {
+            "coords": [
+                {
+                "latitude": 31.72941806467556, 
+                "longitude": 5.666521830653997 
+                }, 
+                { 
+                "latitude": 31.739926700242876, 
+                "longitude": 5.75988709938427 
+                }, 
+                { 
+                "latitude": 31.694380672626355, 
+                "longitude": 5.87659368529709 
+                }, 
+                { 
+                "latitude": 31.780782282009984, 
+                "longitude": 5.953482730133777 
+                }, 
+                { 
+                "latitude": 31.82745228305688, 
+                "longitude": 6.020760644365884 
+                }, 
+                { 
+                "latitude": 31.870601037773323, 
+                "longitude": 6.088038558597991 
+                }, 
+                { 
+                "latitude": 31.911398841789094, 
+                "longitude": 6.122364025042928 
+                } 
+            ],
+            "attributes":[
+                {"name":"gor", "value": "88"},
+                {"name":"oil", "value":22},
+                {"name":"achraf", "value":77},
+                {"name":"order_date", "value":"12-12-2001"},
+                {"name":"hello", "value":"haha"}
+            ]
+        }
+    ]
+}
