@@ -44,9 +44,41 @@ POST http://localhost:8080/pipe/create-pipe
 Content-Type: application/json
 
 {
-  "from_id": "6633a2bff02a70c6bac82ee6",
-  "to_id": "6633a2c7f02a70c6bac82eee",
+  "from_id": "6633d0ebb0710cd83a14a0d0",
+  "to_id": "6633d314a75a82fe3736a184",
   "length": 100,
+  "coords": [
+    {
+      "longitude": 51.5074,
+      "latitude": -0.1278,
+      "elevation": 15
+    },
+    {
+      "longitude": -33.8688,
+      "latitude": 151.2093,
+      "elevation": 25
+    },
+    {
+      "longitude": 51.5074,
+      "latitude": -0.1278,
+      "elevation": 15
+    },
+    {
+      "longitude": -33.8688,
+      "latitude": 151.2093,
+      "elevation": 25
+    },
+    {
+      "longitude": 51.5074,
+      "latitude": -0.1278,
+      "elevation": 15
+    },
+    {
+      "longitude": -33.8688,
+      "latitude": 151.2093,
+      "elevation": 25
+    }
+  ],
   "connectionType": "direct",
   "type": "collect",
   "nature": "oil"

@@ -1,29 +1,90 @@
 const mongoose = require('mongoose'); // Import mongoose module
 const Pipe = require('../models/pipe'); // Import the Pipe model
-
+const Coord = require('../models/coord')
 const Infrastracture = require('../models/infrastracture'); // Import the Infrastracture model
+
+// Controller function to handle creating a new Pipe
+// const createPipe = async (req, res) => {
+//   try {
+//     // Extract data from the request body
+//     const { from_id, to_id, coord_ids, length, connectionType, type, nature } = req.body;
+//     // Check if the provided from_id and to_id are valid ObjectId strings
+//     if (!mongoose.Types.ObjectId.isValid(from_id) || !mongoose.Types.ObjectId.isValid(to_id)) {
+//       return res.status(400).json({ error: 'Invalid ObjectId provided' });
+//     }
+
+//     // Check if the Infrastracture documents with the provided IDs exist
+//     const fromInfrastracture = await Infrastracture.findById(from_id);
+//     const toInfrastracture = await Infrastracture.findById(to_id);
+//     if (!fromInfrastracture || !toInfrastracture) {
+//       return res.status(404).json({ error: 'Infrastracture document not found' });
+//     }
+//     // Create a new Pipe document
+//     const newPipe = new Pipe({
+//       from_id: fromInfrastracture._id,
+//       to_id: toInfrastracture._id,
+//       length,
+//       connectionType,
+//       type,
+//       nature
+//     });
+//     coord_ids.forEach(({ coord_id }) => {
+//       newPipe.coord_ids.push({ coord_id });
+//     });
+
+//     // Save the new Pipe document to the database
+//     const savedPipe = await newPipe.save();
+
+//     res.status(201).json(savedPipe);
+//   } catch (error) {
+//     console.error('Error creating Pipe:', error);
+//     res.status(500).json({ error: 'Failed to create Pipe' });
+//   }
+// };
 
 // Controller function to handle creating a new Pipe
 const createPipe = async (req, res) => {
   try {
     // Extract data from the request body
-    const { from_id, to_id, length, connectionType, type, nature } = req.body;
-    // Check if the provided from_id and to_id are valid ObjectId strings
-    if (!mongoose.Types.ObjectId.isValid(from_id) || !mongoose.Types.ObjectId.isValid(to_id)) {
+    const { from_id, to_id, coords, length, connectionType, type, nature } = req.body;
+      if (!mongoose.Types.ObjectId.isValid(from_id) || !mongoose.Types.ObjectId.isValid(to_id)) {
       return res.status(400).json({ error: 'Invalid ObjectId provided' });
     }
 
-    // Check if the Infrastracture documents with the provided IDs exist
+        // Check if the Infrastracture documents with the provided IDs exist
     const fromInfrastracture = await Infrastracture.findById(from_id);
     const toInfrastracture = await Infrastracture.findById(to_id);
     if (!fromInfrastracture || !toInfrastracture) {
       return res.status(404).json({ error: 'Infrastracture document not found' });
     }
+    // Function to create or find existing coordinates
+    const createOrFindCoord = async (coordData) => {
+      const { longitude, latitude, elevation } = coordData;
+
+      // Check if a Coord document with the same coordinates exists
+        const newCoord = new Coord({
+          longitude,
+          latitude,
+          elevation
+          // Assign the Address ID to the Coord
+        });
+
+    const  coord = await newCoord.save(); // Save the new Coord
+      
+
+      return coord._id; // Return the Coord ID
+    };
+
+    // Create or find the From and To Coords
+
+    // Create or find the Coords in the coords array
+    const coord_ids = await Promise.all(coords.map(createOrFindCoord));
 
     // Create a new Pipe document
     const newPipe = new Pipe({
       from_id: fromInfrastracture._id,
       to_id: toInfrastracture._id,
+      coord_ids,
       length,
       connectionType,
       type,
@@ -39,6 +100,8 @@ const createPipe = async (req, res) => {
     res.status(500).json({ error: 'Failed to create Pipe' });
   }
 };
+
+
 
 // Controller function to get all Pipes
 const getAllPipes = async (req, res) => {
