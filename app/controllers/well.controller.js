@@ -5,6 +5,57 @@ const Address = require('../models/address'); // Import the Address model
 const WellType =require('../models/wellType')
 const mongoose = require('mongoose');
 
+///////////
+const fs = require('fs');
+const csv = require('csv-parser');
+const addWellsFromCSV = async (req, res) => {
+  try {
+    if (!req.file || !req.file.path) {
+      throw new Error('CSV file not uploaded or invalid file path.');
+  }
+
+    const filePath = req.file.path;
+
+    // Read and parse the CSV file
+    const wells = [];
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (row) => {
+        // Process each row from the CSV file and create a Well object
+        const attributes = [];
+
+        // Example of dynamic attribute handling based on CSV data
+        Object.keys(row).forEach((key) => {
+          if (key !== 'name') {
+            attributes.push({ name: key, value: row[key] });
+          }
+        });
+
+        const well = new Well({
+          name: row.name,
+          attributes,
+          // Add other fields as needed
+        });
+        wells.push(well);
+      })
+      .on('end', async () => {
+        // After parsing all rows, save the Well objects to the database
+        try {
+          const savedWells = await Well.insertMany(wells);
+          console.log('Successfully added wells:', savedWells);
+          res.status(201).json({ message: 'Wells added successfully', wells: savedWells });
+        } catch (error) {
+          console.error('Error adding wells:', error);
+          res.status(500).json({ error: 'Failed to add wells' });
+        }
+      });
+  } catch (error) {
+    console.error('Error processing CSV file:', error);
+    res.status(500).json({ error: 'Failed to process CSV file' });
+  }
+};
+
+
 // Controller function to handle creating a new Well, Infrastracture, Coord, and Address
 const createWell = async (req, res) => {
   try {
@@ -148,5 +199,5 @@ const updateWellById = async (req, res) => {
 };
 
 module.exports = {
-  createWell, getAllWells, getWellById, updateWellById,createWellType
+  createWell, getAllWells, getWellById, updateWellById,createWellType,addWellsFromCSV,
 };
