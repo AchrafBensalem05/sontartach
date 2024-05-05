@@ -2,13 +2,14 @@ const Well = require('../models/well'); // Import the Well model
 const Infrastracture = require('../models/infrastracture'); // Import the Infrastracture model
 const Coord = require('../models/coord'); // Import the Coord model
 const Address = require('../models/address'); // Import the Address model
+const WellType =require('../models/wellType')
 const mongoose = require('mongoose');
 
 // Controller function to handle creating a new Well, Infrastracture, Coord, and Address
 const createWell = async (req, res) => {
   try {
     // Extract data from the request body
-    const { name, attributes, centre, region, zone, wilaya, longitude, latitude, elevation } = req.body;
+    const { name, attributes, centre, region, zone, wilaya, longitude, latitude, elevation,type, date } = req.body;
     // Create a new Address document
     const newAddress = new Address({
       centre,
@@ -63,6 +64,10 @@ const createWell = async (req, res) => {
     // Save the new Well document to the database
     const savedWell = await newWell.save();
 
+    ///
+    createWellType(type,date,savedWell)
+
+
     res.status(201).json(savedWell);
   } catch (error) {
     console.error('Error creating Well:', error);
@@ -93,6 +98,16 @@ const getWellById = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch Well' });
   }
 };
+//////////////
+const createWellType = async(type,date,savedWell)=>{
+  if (type) {
+    
+    const newWellType = new WellType({ well_id: savedWell._id, type,date: new Date(date) });
+    return await newWellType.save();
+    
+    
+  }
+}
 /////////
 const updateWellById = async (req, res) => {
   const { id } = req.params;
@@ -133,5 +148,5 @@ const updateWellById = async (req, res) => {
 };
 
 module.exports = {
-  createWell, getAllWells, getWellById, updateWellById
+  createWell, getAllWells, getWellById, updateWellById,createWellType
 };

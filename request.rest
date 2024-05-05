@@ -21,75 +21,12 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/api/test/admin
 #########
-##
-POST http://localhost:8080/well/create-well
-Content-Type: application/json
-
-{
-  "centre": "Sample Centre",
-  "region": "Sample Region",
-  "zone": "Sample Zone",
-  "wilaya": "Sample Wilaya",
-  "longitude": 46.123,
-  "latitude": 45.678,
-  "elevation": 100,
-  "order_date": "2024-05-05",
-  "gor": 10,
-  "oil": 20,
-  "gas": 30
-}
-#########
-
-POST http://localhost:8080/pipe/create-pipe
-Content-Type: application/json
-
-{
-  "from_id": "6633d0ebb0710cd83a14a0d0",
-  "to_id": "6633d314a75a82fe3736a184",
-  "length": 100,
-  "coords": [
-    {
-      "longitude": 51.5074,
-      "latitude": -0.1278,
-      "elevation": 15
-    },
-    {
-      "longitude": -33.8688,
-      "latitude": 151.2093,
-      "elevation": 25
-    },
-    {
-      "longitude": 51.5074,
-      "latitude": -0.1278,
-      "elevation": 15
-    },
-    {
-      "longitude": -33.8688,
-      "latitude": 151.2093,
-      "elevation": 25
-    },
-    {
-      "longitude": 51.5074,
-      "latitude": -0.1278,
-      "elevation": 15
-    },
-    {
-      "longitude": -33.8688,
-      "latitude": 151.2093,
-      "elevation": 25
-    }
-  ],
-  "connectionType": "direct",
-  "type": "collect",
-  "nature": "oil"
-}
-
 ######
 POST http://localhost:8080/well/create-well
 Content-Type: application/json
 
 {
-  "name": "Well 5",
+  "name": "Well 9",
   "attributes": [
     { "name": "gor", "value": 40 },
     { "name": "oil", "value": 500 },
@@ -105,7 +42,9 @@ Content-Type: application/json
   "zone":"blbhhhlb",
   "longitude": 46.123,
   "latitude": 45.678,
-  "elevation": 100
+  "elevation": 100,
+  "type":"eriptif",
+  "date":"2022-12-14T00:00:00.000Z"
 }
 
 ###### 
@@ -278,3 +217,76 @@ Content-Type: application/json
         }
     ]
 }
+
+
+#######
+PATCH http://localhost:8080/pipe/66366749a03561767f8444b8
+Content-Type: application/json
+
+{
+    "segments":[
+        {
+            "coords": [
+                {
+                    "latitude": 31.72941806467556, 
+                    "longitude": 5.666521830653997 
+                }, 
+                { 
+                    "latitude": 31.739926700242876, 
+                    "longitude": 5.75988709938427 
+                }, 
+                { 
+                    "latitude": 31.694380672626355, 
+                    "longitude": 5.87659368529709 
+                }
+            ],
+            "attributes":[
+                {"name":"gor", "value": "88"},
+                {"name":"oil", "value":22},
+                {"name":"achraf", "value":77},
+                {"name":"order_date", "value":"12-12-2001"},
+                {"name":"hello", "value":"haha"}
+            ]
+        },
+        {
+            "coords": [ 
+                { 
+                    "latitude": 31.780782282009984, 
+                    "longitude": 5.953482730133777 
+                }, 
+                { 
+                    "latitude": 31.82745228305688, 
+                    "longitude": 6.020760644365884 
+                }, 
+                { 
+                    "latitude": 31.870601037773323, 
+                    "longitude": 6.088038558597991 
+                }, 
+                { 
+                    "latitude": 31.911398841789094, 
+                    "longitude": 6.122364025042928 
+                } 
+            ],
+            "attributes":[
+                {"name":"gor", "value": "88"},
+                {"name":"oil", "value":22},
+                {"name":"achraf", "value":77},
+                {"name":"order_date", "value":"12-12-2001"},
+                {"name":"hello", "value":"haha"}
+            ]
+        }
+    ]
+}
+
+########
+POST http://localhost:8080/inspection/create
+Content-Type: application/json
+
+{
+    "pipeID":"66365f0abcbf716ec33b78e4",
+    "observation":"hello this is observation",
+    "ficher":"this is attached file of the inspection",
+    "Inspection_date":"12-12-2001"
+}
+############ 
+GET http://localhost:8080/inspection

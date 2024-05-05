@@ -13,7 +13,7 @@ router.get('/', pipeController.getAllPipes);
 router.get('/:id', pipeController.getPipeById);
 
 // Route to update a Pipe by ID
-router.put('/:id', pipeController.updatePipeById);
+router.patch('/:id', pipeController.updatePipe);
 
 // Route to delete a Pipe by ID
 router.delete('/:id', pipeController.deletePipeById);

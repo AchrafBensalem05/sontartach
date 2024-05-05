@@ -49,11 +49,14 @@ const pipeRoutes = require('./app/routes/pipe.routes'); // Import the wellRoutes
 const Pipe = require('./app/models/pipe');
 const manufoldRoutes = require('./app/routes/manufold.routes')
 const Manufold = require("./app/models/manufold")
+const inspectionRoutes= require('./app/routes/inspection.routes')
 
 // Use the wellRoutes for handling well-related routes
 app.use('/pipe',pipeRoutes)
 app.use('/well', wellRoutes);
 app.use('/manufold',manufoldRoutes);
+app.use('/inspection', inspectionRoutes);
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
