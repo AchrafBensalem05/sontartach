@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const dbConfig = require("./app/config/db.config");
+const cron = require('node-cron');
+const axios = require('axios');
 
 const app = express();
 
@@ -45,6 +47,8 @@ require("./app/routes/user.routes")(app);
 
 const wellRoutes = require('./app/routes/well.routes');
 const Well = require('./app/models/well'); // Import the Well model
+const telemetryRoutes = require('./app/routes/telemetry.routes')
+const telemetry = require('./app/models/telemetry')
 const pipeRoutes = require('./app/routes/pipe.routes'); // Import the wellRoutes
 const Pipe = require('./app/models/pipe');
 const manufoldRoutes = require('./app/routes/manufold.routes')
@@ -56,7 +60,24 @@ app.use('/pipe',pipeRoutes)
 app.use('/well', wellRoutes);
 app.use('/manufold',manufoldRoutes);
 app.use('/inspection', inspectionRoutes);
+app.use('/telemetry',telemetryRoutes)
 
+cron.schedule('*/100 * * * *', async () => {
+  try {
+      const telemetryData = {
+          ID: '6633d0ebb0710cd83a14a0d0',
+          date: new Date(),
+          attributes: [
+              {name:"pressure", value: 21},// Your pressure data,
+              {name:"temperature", value:13} // Your temperature data
+          ]
+      };
+      await axios.post('http://localhost:8080/telemetry/create', telemetryData);
+      console.log('Telemetry data sent successfully.');
+  } catch (err) {
+      console.error('Error sending telemetry data:', err);
+  }
+});
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
@@ -79,7 +100,7 @@ function initial() {
 
       new Role({
         name: "moderator"
-      }).save(err => {
+      }).save(err => { 
         if (err) {
           console.log("error", err);
         }
