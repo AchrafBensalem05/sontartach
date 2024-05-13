@@ -68,8 +68,8 @@ cron.schedule('*/100 * * * *', async () => {
           ID: '6633d0ebb0710cd83a14a0d0',
           date: new Date(),
           attributes: [
-              {name:"pressure", value: 21},// Your pressure data,
-              {name:"temperature", value:13} // Your temperature data
+              {name:"pressure", value: Math.random()*10+20},// Your pressure data,
+              {name:"temperature", value:Math.random()*10+20} // Your temperature data
           ]
       };
       await axios.post('http://localhost:8080/telemetry/create', telemetryData);
