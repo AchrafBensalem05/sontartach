@@ -1,13 +1,15 @@
 const express = require('express');
 
 const wellController = require('../controllers/well.controller');
+const upload = require('../middlewares/upload');
 
 const router = express.Router();
 
 // Route to create a new Well
 router.post('/create-well', wellController.createWell);
 ////////
-router.post('/upload',wellController.addWellsFromCSV)
+
+router.post('/upload', upload.single('file'), wellController.addWellsFromCSV);
 
 // Route to get all Wells
 router.get('/', wellController.getAllWells);

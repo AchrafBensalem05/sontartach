@@ -36,10 +36,10 @@ Content-Type: application/json
     {"name":"islam","value":"benchiba"}
 
   ],
-  "centre":"blahhhbal",
-  "region":"blahhbla",
-  "wilaya":"blahhhblbaa",
-  "zone":"blbhhhlb",
+  "centre":"hassi",
+  "region":"hassi",
+  "wilaya":"batna",
+  "zone":"32",
   "longitude": 46.123,
   "latitude": 45.678,
   "elevation": 100,
@@ -91,10 +91,10 @@ Content-Type: application/json
     {"name":"islam","value":"benchiba"}
 
   ],
-  "centre":"blahhhbal",
-  "region":"blahhbla",
-  "wilaya":"blahhhblbaa",
-  "zone":"blbhhhlb",
+  "centre":"centre1",
+  "region":"ourgla",
+  "wilaya":"hassi messoud",
+  "zone":"laghouat",
   "longitude": 46.123,
   "latitude": 45.678,
   "elevation": 100
@@ -291,6 +291,9 @@ Content-Type: application/json
         }
     ]
 }
+
+#######
+GET http://localhost:8080/pipe/66365f0abcbf716ec33b78e4/segments
 
 ########
 POST http://localhost:8080/inspection/create

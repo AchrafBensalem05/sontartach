@@ -9,6 +9,8 @@ router.post('/create-pipe', pipeController.createPipe);
 // get all pipes
 router.get('/', pipeController.getAllPipes);
 
+router.get('/:id/segments',pipeController.getSegmentsByPipeId);
+
 // Route to get a specific Pipe by ID
 router.get('/:id', pipeController.getPipeById);
 

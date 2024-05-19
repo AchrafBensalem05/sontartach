@@ -228,7 +228,30 @@ const getAllPipes = async (req, res) => {
     }
   };
   
+  // Controller function to get all segments by Pipe ID
+  const getSegmentsByPipeId = async (req, res) => {
+      const  pipeId  = mongoose.Types.ObjectId(req.params);
+        
+      if (!mongoose.Types.ObjectId.isValid(pipeId)) {
+        return res.status(400).json({ error: 'Invalid Pipe ID provided' });
+      }
+    
+    try {
+      // Find the Pipe by ID to check if it exists
+      const pipe = await Pipe.findById(pipeId);
+      if (!pipe) {
+        return res.status(404).json({ error: 'Pipe not found' });
+      }
   
+      // Find all segments related to the Pipe ID
+      const segments = await PipeSegment.find({ pipeId });
+  
+      res.status(200).json(segments);
+    } catch (error) {
+      console.error('Error retrieving segments by Pipe ID:', error);
+      res.status(500).json({ error: 'Failed to retrieve segments' });
+    }
+  };
   // Controller function to delete a Pipe by ID
   const deletePipeById = async (req, res) => {
     const { id } = req.params;
@@ -250,5 +273,6 @@ const getAllPipes = async (req, res) => {
     getPipeById,
     updatePipe,
     deletePipeById,
+    getSegmentsByPipeId
     
   };

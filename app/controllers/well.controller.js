@@ -8,40 +8,73 @@ const mongoose = require('mongoose');
 ///////////
 const fs = require('fs');
 const csv = require('csv-parser');
+// Controller function to handle creating new Well and related documents from CSV
 const addWellsFromCSV = async (req, res) => {
   try {
     if (!req.file || !req.file.path) {
       throw new Error('CSV file not uploaded or invalid file path.');
-  }
+    }
 
     const filePath = req.file.path;
+    const wells = [];
 
     // Read and parse the CSV file
-    const wells = [];
     fs.createReadStream(filePath)
       .pipe(csv())
       .on('data', (row) => {
-        // Process each row from the CSV file and create a Well object
-        const attributes = [];
+        const attributes = Object.keys(row).filter(key => !['name', 'centre', 'region', 'zone', 'wilaya', 'longitude', 'latitude', 'elevation', 'type', 'order_date'].includes(key)).map(key => ({
+          name: key,
+          value: row[key]
+        }));
 
-        // Example of dynamic attribute handling based on CSV data
-        Object.keys(row).forEach((key) => {
-          if (key !== 'name') {
-            attributes.push({ name: key, value: row[key] });
-          }
-        });
-
-        const well = new Well({
+        const wellData = {
           name: row.name,
           attributes,
-          // Add other fields as needed
-        });
-        wells.push(well);
+          centre: row.centre,
+          region: row.region,
+          zone: row.zone,
+          wilaya: row.wilaya,
+          longitude: row.longitude,
+          latitude: row.latitude,
+          elevation: row.elevation,
+          type: row.type,
+          order_date: row.order_date
+        };
+
+        wells.push(wellData);
       })
       .on('end', async () => {
-        // After parsing all rows, save the Well objects to the database
         try {
-          const savedWells = await Well.insertMany(wells);
+          const savedWells = [];
+          for (const wellData of wells) {
+            const { name, attributes, centre, region, zone, wilaya, longitude, latitude, elevation, type, order_date } = wellData;
+
+            const newAddress = new Address({ centre, region, zone, wilaya });
+            const savedAddress = await newAddress.save();
+
+            const newCoord = new Coord({ longitude, latitude, elevation, idAdr: savedAddress._id });
+            const savedCoord = await newCoord.save();
+
+            const newInfrastracture = new Infrastracture({ coord_id: savedCoord._id });
+            const savedInfrastracture = await newInfrastracture.save();
+
+            const newWell = new Well({
+              Infrastracture: savedInfrastracture._id,
+              name,
+              attributes,
+              order_date: new Date(order_date)
+            });
+
+            const savedWell = await newWell.save();
+
+            if (type) {
+              const newWellType = new WellType({ well_id: savedWell._id, type, date: new Date(order_date) });
+              await newWellType.save();
+            }
+
+            savedWells.push(savedWell);
+          }
+
           console.log('Successfully added wells:', savedWells);
           res.status(201).json({ message: 'Wells added successfully', wells: savedWells });
         } catch (error) {
@@ -54,6 +87,8 @@ const addWellsFromCSV = async (req, res) => {
     res.status(500).json({ error: 'Failed to process CSV file' });
   }
 };
+
+
 
 
 // Controller function to handle creating a new Well, Infrastracture, Coord, and Address
