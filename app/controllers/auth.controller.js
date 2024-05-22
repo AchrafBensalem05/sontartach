@@ -20,13 +20,27 @@ exports.signup = (req, res) => {
     }
 
     if (req.body.roles) {
+      // Ensure roles are an array of strings
+      const rolesArray = Array.isArray(req.body.roles) ? req.body.roles : [req.body.roles];
+      console.log('Requested roles:', rolesArray);
+
       Role.find(
         {
-          name: { $in: req.body.roles }
+          name: { $in: rolesArray }
         },
         (err, roles) => {
           if (err) {
             res.status(500).send({ message: err });
+            return;
+          }
+
+          console.log('Found roles:', roles.map(role => role.name));
+
+          if (roles.length !== rolesArray.length) {
+            const invalidRoles = rolesArray.filter(
+              role => !roles.map(r => r.name).includes(role)
+            );
+            res.status(400).send({ message: `Failed! Role(s) ${invalidRoles.join(', ')} do not exist!` });
             return;
           }
 

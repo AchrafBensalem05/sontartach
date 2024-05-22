@@ -4,7 +4,7 @@ const Coord = require('../models/coord'); // Import the Coord model
 const Address = require('../models/address'); // Import the Address model
 const WellType =require('../models/wellType')
 const mongoose = require('mongoose');
-
+const authenticateToken = require('../middlewares/auth');
 ///////////
 const fs = require('fs');
 const csv = require('csv-parser');
@@ -234,5 +234,10 @@ const updateWellById = async (req, res) => {
 };
 
 module.exports = {
-  createWell, getAllWells, getWellById, updateWellById,createWellType,addWellsFromCSV,
+  createWell,
+  getAllWells,
+  getWellById,
+  updateWellById,
+  createWellType,
+  addWellsFromCSV
 };

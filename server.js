@@ -3,6 +3,15 @@ const cors = require("cors");
 const dbConfig = require("./app/config/db.config");
 const cron = require('node-cron');
 const axios = require('axios');
+const EventEmitter = require('events');
+
+// Create an instance of EventEmitter
+const emitter = new EventEmitter();
+
+// Set the maximum number of listeners for the event emitter
+emitter.setMaxListeners(15); // Adjust the limit as per your needs
+
+// Now you can use the event emitter with increased listeners limit
 
 const app = express();
 
@@ -89,7 +98,7 @@ function initial() {
   Role.estimatedDocumentCount((err, count) => {
     if (!err && count === 0) {
       new Role({
-        name: "user"
+        name: "viewer"
       }).save(err => {
         if (err) {
           console.log("error", err);
@@ -99,26 +108,45 @@ function initial() {
       });
 
       new Role({
-        name: "moderator"
+        name: "pipeAdmin"
       }).save(err => { 
         if (err) {
           console.log("error", err);
         }
 
-        console.log("added 'moderator' to roles collection");
+        console.log("added 'pipeAdmin' to roles collection");
       });
 
       new Role({
-        name: "admin"
+        name: "wellAdmin"
       }).save(err => {
         if (err) {
           console.log("error", err);
         }
 
-        console.log("added 'admin' to roles collection");
+        console.log("added 'wellAdmin' to roles collection");
+      });
+      new Role({
+        name: "manufoldAdmin"
+      }).save(err => {
+        if (err) {
+          console.log("error", err);
+        }
+
+        console.log("added 'manufoldAdmin' to roles collection");
+      });
+      new Role({
+        name: "inspectionAdmin"
+      }).save(err => {
+        if (err) {
+          console.log("error", err);
+        }
+
+        console.log("added 'inspectionAdmin' to roles collection");
       });
     }
   });
+      
 }
 
 

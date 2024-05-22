@@ -2,10 +2,10 @@ POST http://localhost:8080/api/auth/signup
 Content-Type: application/json
 
 {
-    "username":"islawwm2",
-    "email":"ac.bens.ssaddlem@gmail.com",
-    "password":"hellowsorld",
-    "roles":"admin"
+    "username":"achrsausfsbb",
+    "email":"achrafu@gsmssail.com",
+    "password":"helloworld",
+    "roles":["wellAdmin"]
 }
 
 ###
@@ -14,19 +14,26 @@ POST http://localhost:8080/api/auth/signin
 Content-Type: application/json
 
 {
-    "username":"achraf",
+    "username":"achrsausfsbb",
     "password":"helloworld"
 }
+
 
 ###
 GET http://localhost:8080/api/test/admin
 #########
-######
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NDliOWEzNzA0NzNmYzI4ODMxZmUzNiIsImlhdCI6MTcxNjEyMjY0MywiZXhwIjoxNzE2MjA5MDQzfQ.ihscKgv1KRItXafdfOOlLRrCLCyEg0t0tR6d73xTVAw
+#################
+GET http://localhost:8080/well
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGI4MWVkYjYwYTU4YzkzZWZkMTRkMSIsImlhdCI6MTcxNjIyNDU4MCwiZXhwIjoxNzE2MzEwOTgwfQ.GnnmLc7Lt-e1qKQptmKX-ew84pTWBWI_pNnCLPUITTM
+
+###### 
 POST http://localhost:8080/well/create-well
 Content-Type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGRhYzQyODc4NzlkYWI4MTgyYmI3MSIsImlhdCI6MTcxNjM2NjQxMiwiZXhwIjoxNzE2NDUyODEyfQ.Jgj7P8yjZ4ERqj7nh6_hjGymPZHk0ksno7sybUKXZGc
 
 {
-  "name": "Well 9",
+  "name": "Well990 ",
   "attributes": [
     { "name": "gor", "value": 40 },
     { "name": "oil", "value": 500 },
@@ -36,14 +43,14 @@ Content-Type: application/json
     {"name":"islam","value":"benchiba"}
 
   ],
-  "centre":"hassi",
-  "region":"hassi",
-  "wilaya":"batna",
-  "zone":"32",
-  "longitude": 46.123,
-  "latitude": 45.678,
-  "elevation": 100,
-  "type":"eriptif",
+  "centre":"hassi90",
+  "region":"hassi90",
+  "wilaya":"batna99",
+  "zone":"3299",
+  "longitude": 9946.123,
+  "latitude": 9945.678,
+  "elevation": 19900,
+  "type":"eriptif99",
   "date":"2022-12-14T00:00:00.000Z"
 }
 
@@ -61,6 +68,10 @@ Content-Type: application/json
     ]
 }
 
+######
+GET http://localhost:8080/well
+Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGRhYzQyODc4NzlkYWI4MTgyYmI3MSIsImlhdCI6MTcxNjM2NjQxMiwiZXhwIjoxNzE2NDUyODEyfQ.Jgj7P8yjZ4ERqj7nh6_hjGymPZHk0ksno7sybUKXZGc
+
 ###### 
 PATCH http://localhost:8080/well/6633d0ebb0710cd83a14a0d2
 Content-Type: application/json
@@ -75,6 +86,8 @@ Content-Type: application/json
         {"name":"hello", "value":"haha"}
     ]
 }
+########
+GET http://localhost:8080/manufold
 
 ######    
 POST http://localhost:8080/manufold/create-manufold
@@ -116,6 +129,7 @@ Content-Type: application/json
 }
 ##########
 GET http://localhost:8080/pipe
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGRhYzQyODc4NzlkYWI4MTgyYmI3MSIsImlhdCI6MTcxNjM3MDM4MywiZXhwIjoxNzE2NDU2NzgzfQ.452P17-CPu4aqXNBrlJqzfTsWkxxVKXoMStojHSdz_I
 #########
 POST http://localhost:8080/pipe/create-pipe
 Content-Type: application/json
