@@ -1,0 +1,11 @@
+name,gor,oil,gas,order_date,attribute1,attribute2,attribute3
+Well 1,40,500,200,21-12-2001,Value1.1,Value1.2,Value1.3
+Well 2,35,450,180,15-10-2002,Value2.1,Value2.2,Value2.3
+Well 3,42,480,190,28-05-2003,Value3.1,Value3.2,Value3.3
+Well 4,38,520,220,09-08-2004,Value4.1,Value4.2,Value4.3
+Well 5,41,490,200,17-03-2005,Value5.1,Value5.2,Value5.3
+Well 6,36,510,210,22-11-2006,Value6.1,Value6.2,Value6.3
+Well 7,39,470,195,30-07-2007,Value7.1,Value7.2,Value7.3
+Well 8,37,530,225,08-04-2008,Value8.1,Value8.2,Value8.3
+Well 9,43,460,185,13-01-2009,Value9.1,Value9.2,Value9.3
+Well 10,34,540,230,25-06-2010,Value10.1,Value10.2,Value10.3
