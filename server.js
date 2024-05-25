@@ -1,9 +1,13 @@
 const express = require("express");
 const cors = require("cors");
+var bodyParser = require('body-parser')
+
 const dbConfig = require("./app/config/db.config");
 const cron = require('node-cron');
 const axios = require('axios');
+const cookieParser = require('cookie-parser')
 const EventEmitter = require('events');
+
 
 // Create an instance of EventEmitter
 const emitter = new EventEmitter();
@@ -14,15 +18,17 @@ emitter.setMaxListeners(15); // Adjust the limit as per your needs
 // Now you can use the event emitter with increased listeners limit
 
 const app = express();
+app.use(cookieParser());
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:3000",
+  credentials: true // Allow cookies to be sent
 };
 
-app.use(cors(corsOptions));
-
 // parse requests of content-type - application/json
-app.use(express.json());
+app.use(bodyParser.json({limit: '30mb',extended: true}));
+app.use(bodyParser.urlencoded({limit: '30mb',extended: true}));
+app.use(cors(corsOptions));
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
@@ -50,7 +56,6 @@ app.get("/", (req, res) => {
 });
 
 // routes
-require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 // require("./app/routes/well.routes")
 
@@ -63,6 +68,7 @@ const Pipe = require('./app/models/pipe');
 const manufoldRoutes = require('./app/routes/manufold.routes')
 const Manufold = require("./app/models/manufold")
 const inspectionRoutes= require('./app/routes/inspection.routes')
+const authentication= require('./app/routes/auth.routes');
 
 // Use the wellRoutes for handling well-related routes
 app.use('/pipe',pipeRoutes)
@@ -70,6 +76,8 @@ app.use('/well', wellRoutes);
 app.use('/manufold',manufoldRoutes);
 app.use('/inspection', inspectionRoutes);
 app.use('/telemetry',telemetryRoutes)
+app.use('/auth', authentication);
+
 
 cron.schedule('*/100 * * * *', async () => {
   try {
