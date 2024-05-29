@@ -5,123 +5,86 @@ const Role = db.role;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const maxAge = 24 * 60 * 60;
 
-exports.signup = (req, res) => {
-  const user = new User({
-    username: req.body.username,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
-  });
+exports.signup = async (req, res) => {
+  const { nom, prenom, position, departement, role, email, password } =
+    req.body;
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser)
+      return res.status(500).json({ message: "user already exist" });
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const result = await User.create({
+      nom: nom,
+      prenom: prenom,
+      position: position,
+      departement: departement,
+      role: role,
+      email: email,
+      password: hashedPassword,
+    });
+    console.log("userrrrrrrrrrrrrrrrrrr");
+    const token = jwt.sign({ id: result.id }, config.secret, {
+      algorithm: "HS256",
+      allowInsecureKeySizes: true,
+      expiresIn: 86400,
+    });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+      sameSite: "none", // Set the SameSite attribute to 'none'
+      secure: false,
+    });
 
-  user.save((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-
-    if (req.body.roles) {
-      // Ensure roles are an array of strings
-      const rolesArray = Array.isArray(req.body.roles) ? req.body.roles : [req.body.roles];
-      console.log('Requested roles:', rolesArray);
-
-      Role.find(
-        {
-          name: { $in: rolesArray }
-        },
-        (err, roles) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          console.log('Found roles:', roles.map(role => role.name));
-
-          if (roles.length !== rolesArray.length) {
-            const invalidRoles = rolesArray.filter(
-              role => !roles.map(r => r.name).includes(role)
-            );
-            res.status(400).send({ message: `Failed! Role(s) ${invalidRoles.join(', ')} do not exist!` });
-            return;
-          }
-
-          user.roles = roles.map(role => role._id);
-          user.save(err => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
-
-            res.send({ message: "User was registered successfully!" });
-          });
-        }
-      );
-    } else {
-      Role.findOne({ name: "user" }, (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-
-        user.roles = [role._id];
-        user.save(err => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          res.send({ message: "User was registered successfully!" });
-        });
-      });
-    }
-  });
+    res
+      .status(200)
+      .json({ result, token, message: "you ccreated user successfully" });
+  } catch (error) {
+    console.error("Error in signup:", error);
+    return res.status(500).json({ message: "Internal server error" }); // 500 Internal Server Error
+  }
 };
 
-exports.signin = (req, res) => {
-  User.findOne({
-    username: req.body.username
-  })
-    .populate("roles", "-__v")
-    .exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
+exports.signin = async (req, res) => {
+  console.log('before fiiiiiiiiiind user')
+  const { email, password } = req.body;
+  try {
+    const existingUser = await User.findOne({ email });
+    console.log('existingUser',existingUser)
 
-      if (!user) {
-        return res.status(404).send({ message: "User Not found." });
-      }
+    if (!existingUser) return res.status(500).json({error: 'email_not_found', message: "email not found" });
 
-      var passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
+    const passwordIsValid = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
+    console.log('passwordIsValid',passwordIsValid)
+    if (!passwordIsValid) {
+      console.log('passwordIsValid',passwordIsValid)
+      return res.status(500).json({error: 'invalid_password', message: "password is incorrect" });
+    }
+    console.log('fiiiiiiiiiind userdddddddddddd')
 
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!"
-        });
-      }
-
-      const token = jwt.sign({ id: user.id },
-                              config.secret,
-                              {
-                                algorithm: 'HS256',
-                                allowInsecureKeySizes: true,
-                                expiresIn: 86400, // 24 hours
-                              });
-
-      var authorities = [];
-
-      for (let i = 0; i < user.roles.length; i++) {
-        authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-      }
-      res.status(200).send({
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        roles: authorities,
-        accessToken: token
-      });
+    const token = jwt.sign({ id: existingUser.id }, config.secret, {
+      algorithm: "HS256",
+      allowInsecureKeySizes: true,
+      expiresIn: 86400, // 24 hours
     });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+      sameSite: "none", // Set the SameSite attribute to 'none'
+      secure: false,
+    });
+    console.log('fiiiiiiiiiind user AAAAAAAAA')
+    res
+      .status(200)
+      .json({ existingUser, token, message: "You logged in successfully" });
+      console.log('fiiiiiiiiiind user BBBBBBBBBBBBB')
+
+  } catch (error) {
+    console.error("Error in signup:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };

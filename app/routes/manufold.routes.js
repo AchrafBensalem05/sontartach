@@ -5,11 +5,11 @@ const manufoldController = require('../controllers/manufold.controller');
 const router = express.Router();
 
 // Route to create a new manufold
-router.post('/create-manufold', manufoldController.createManufold);
+router.post('/create-manifold', manufoldController.createManufold);
 
 
 // Route to get all manufolds
-router.get('/', manufoldController.getAllManufolds);
+router.get('/getAll', manufoldController.getAllManufolds);
 
 // Route to get a specific manufold by ID
 router.get('/:id', manufoldController.getManufoldById);

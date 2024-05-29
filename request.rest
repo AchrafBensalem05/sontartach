@@ -182,7 +182,8 @@ Content-Type: application/json
     "nature": "oil",
     "segments":[
         {
-            "coords": [[
+            "coords": [
+                [
                 { 
                     "latitude": 31.788951233790343, 
                     "longitude": 5.405648285672383 
@@ -195,7 +196,8 @@ Content-Type: application/json
                     "latitude": 31.72941806467556, 
                     "longitude": 5.666521830653997 
                 }
-            ]],
+            ]
+            ],
             "attributes":[
                 {"name":"gor", "value": "88"},
                 {"name":"oil", "value":22},

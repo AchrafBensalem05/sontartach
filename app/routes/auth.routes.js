@@ -1,23 +1,25 @@
-const { verifySignUp } = require("../middlewares");
-const controller = require("../controllers/auth.controller");
+const express = require('express');
+const router = express.Router();
+const authController = require('../controllers/auth.controller');
 
-module.exports = function(app) {
-  app.use(function(req, res, next) {
-    res.header(
-      "Access-Control-Allow-Headers",
-      "x-access-token, Origin, Content-Type, Accept"
-    );
-    next();
-  });
+// Log incoming requests
+router.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
 
-  app.post(
-    "/api/auth/signup",
-    [
-      verifySignUp.checkDuplicateUsernameOrEmail,
-      verifySignUp.checkRolesExisted
-    ],
-    controller.signup
-  );
+router.post('/users/signup', (req, res, next) => {
+  console.log('Signup route hit');
+  console.log(req.body)
+  authController.signup(req, res, next);
 
-  app.post("/api/auth/signin", controller.signin);
-};
+});
+
+router.post('/users/signin', (req, res, next) => {
+  console.log('Signup route hit');
+  console.log(req.body)
+  authController.signin(req, res, next);
+
+});
+
+module.exports = router;

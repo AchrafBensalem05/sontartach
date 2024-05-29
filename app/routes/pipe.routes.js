@@ -5,7 +5,7 @@ const authenticateToken = require('../middlewares/auth'); // Import the middlewa
 const router = express.Router();
 
 // Route to create a new Pipe
-router.post('/create-pipe', authenticateToken.authenticateToken, authenticateToken.isPipeAdmin, pipeController.createPipe);
+router.post('/create-pipe', authenticateToken.authenticateToken, pipeController.createPipe);
 
 // Route to get all Pipes
 router.get('/', authenticateToken.authenticateToken , pipeController.getAllPipes);

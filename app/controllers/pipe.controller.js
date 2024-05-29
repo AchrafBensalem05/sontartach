@@ -1,8 +1,8 @@
-const mongoose = require('mongoose'); // Import mongoose module
-const Pipe = require('../models/pipe'); // Import the Pipe model
-const Coord = require('../models/coord');
-const PipeSegment = require('../models/pipeSegment'); // Adjust the path as per your project structure
-const Infrastracture = require('../models/infrastracture'); // Import the Infrastracture model
+const mongoose = require("mongoose"); // Import mongoose module
+const Pipe = require("../models/pipe"); // Import the Pipe model
+const Coord = require("../models/coord");
+const PipeSegment = require("../models/pipeSegment"); // Adjust the path as per your project structure
+const Infrastracture = require("../models/infrastracture"); // Import the Infrastracture model
 
 // Controller function to handle creating a new Pipe
 // const createPipe = async (req, res) => {
@@ -46,18 +46,27 @@ const Infrastracture = require('../models/infrastracture'); // Import the Infras
 // Controller function to handle creating a new Pipe
 const createPipe = async (req, res) => {
   try {
-    // Extract data from the request body
-    const { from_id, to_id, coords, length, connectionType, type, nature, segments } = req.body;
-      if (!mongoose.Types.ObjectId.isValid(from_id) || !mongoose.Types.ObjectId.isValid(to_id)) {
-      return res.status(400).json({ error: 'Invalid ObjectId provided' });
-    }
+    const [result, segments] = req.body;
+    console.log("kkkkkk", result);
 
-        // Check if the Infrastracture documents with the provided IDs exist
-    const fromInfrastracture = await Infrastracture.findById(from_id);
-    const toInfrastracture = await Infrastracture.findById(to_id);
-    if (!fromInfrastracture || !toInfrastracture) {
-      return res.status(404).json({ error: 'Infrastracture document not found' });
-    }
+    // Extract data from the request body
+    const { from_id, to_id, length, connectionType, type, nature,newTotalDistance } = result;
+    const [firstSegment] = segments;
+    const { coords, attributes } = firstSegment;
+
+    console.log("Coords:", coords[0]); // Access the nested array of coordinates
+    console.log("Attributes:", attributes);
+
+    //   if (!mongoose.Types.ObjectId.isValid(from_id) || !mongoose.Types.ObjectId.isValid(to_id)) {
+    //   return res.status(400).json({ error: 'Invalid ObjectId provided' });
+    // }
+
+    // Check if the Infrastracture documents with the provided IDs exist
+    // const fromInfrastracture = await Infrastracture.findById(from_id);
+    // const toInfrastracture = await Infrastracture.findById(to_id);
+    // if (!fromInfrastracture || !toInfrastracture) {
+    //   return res.status(404).json({ error: 'Infrastracture document not found' });
+    // }
     // Function to create or find existing coordinates
     const createOrFindCoord = async (coordData) => {
       const { longitude, latitude } = coordData;
@@ -66,14 +75,13 @@ const createPipe = async (req, res) => {
         return existingCoord._id;
       }
       // Check if a Coord document with the same coordinates exists
-        const newCoord = new Coord({
-          longitude,
-          latitude
-          // Assign the Address ID to the Coord
-        });
+      const newCoord = new Coord({
+        longitude,
+        latitude,
+        // Assign the Address ID to the Coord
+      });
 
-    const  coord = await newCoord.save(); // Save the new Coord
-      
+      const coord = await newCoord.save(); // Save the new Coord
 
       return coord._id; // Return the Coord ID
     };
@@ -85,194 +93,189 @@ const createPipe = async (req, res) => {
 
     // Create a new Pipe document
     const newPipe = new Pipe({
-      from_id: fromInfrastracture._id,
-      to_id: toInfrastracture._id,
-      coord_ids,
-      length,
+      from_id: '5f9f1b9b9c9d440000e51e6b',
+      to_id: '5f9f1b9b9c9d440000e51e6c',
+      coord_ids:coord_ids,
+      length:newTotalDistance,
       connectionType,
-      type,
-      nature
+      type:'collect',
+      nature:'oil',
     });
 
     // Save the new Pipe document to the database
     const savedPipe = await newPipe.save();
-// Create segments for the pipe
-const createSegments = async () => {
-  const createdSegments = [];
-  for (const segmentData of segments) {
-    const { coords, attributes } = segmentData;
-    const coordIds = await Promise.all(coords.map(createOrFindCoord));
+    // Create segments for the pipe
+    const createSegments = async () => {
+      const createdSegments = [];
+      for (const segmentData of segments) {
+        const { coords, attributes } = segmentData;
+        const coordIds = await Promise.all(coords.map(createOrFindCoord));
 
-    // Create a new segment document
-    const newSegment = new PipeSegment({
-      pipeId: savedPipe._id,
-      coor_id: coordIds,
-      attributes
-    });
+        // Create a new segment document
+        const newSegment = new PipeSegment({
+          pipeId: savedPipe._id,
+          coor_id: coordIds,
+          attributes,
+        });
 
-    // Save the new segment document to the database
-    const savedSegment = await newSegment.save();
-    createdSegments.push(savedSegment);
+        // Save the new segment document to the database
+        const savedSegment = await newSegment.save();
+        createdSegments.push(savedSegment);
+      }
+      return createdSegments;
+    };
+
+    const createdSegments = await createSegments();
+
+    res.status(201).json({ pipe: savedPipe, segments: createdSegments });
+  } catch (error) {
+    console.error("Error creating Pipe:", error);
+    res.status(500).json({ error: "Failed to create Pipe and Segments" });
   }
-  return createdSegments;
-  
 };
-
-
-
-const createdSegments = await createSegments();
-
-res.status(201).json({ pipe: savedPipe, segments: createdSegments });
-} catch (error) {
-console.error('Error creating Pipe:', error);
-res.status(500).json({ error: 'Failed to create Pipe and Segments' });
-}
-};
-
-
 
 // Controller function to get all Pipes
 const getAllPipes = async (req, res) => {
-    try {
-      const pipes = await Pipe.find();
-      res.status(200).json(pipes);
-    } catch (error) {
-      console.error('Error getting Pipes:', error);
-      res.status(500).json({ error: 'Failed to get Pipes' });
+  try {
+    const pipes = await Pipe.find();
+    res.status(200).json(pipes);
+  } catch (error) {
+    console.error("Error getting Pipes:", error);
+    res.status(500).json({ error: "Failed to get Pipes" });
+  }
+};
+
+// Controller function to get a specific Pipe by ID
+const getPipeById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pipe = await Pipe.findById(id);
+    if (!pipe) {
+      return res.status(404).json({ error: "Pipe not found" });
     }
-  };
-  
-  // Controller function to get a specific Pipe by ID
-  const getPipeById = async (req, res) => {
-    const { id } = req.params;
-    try {
-      const pipe = await Pipe.findById(id);
-      if (!pipe) {
-        return res.status(404).json({ error: 'Pipe not found' });
-      }
-      res.status(200).json(pipe);
-    } catch (error) {
-      console.error('Error getting Pipe by ID:', error);
-      res.status(500).json({ error: 'Failed to get Pipe' });
+    res.status(200).json(pipe);
+  } catch (error) {
+    console.error("Error getting Pipe by ID:", error);
+    res.status(500).json({ error: "Failed to get Pipe" });
+  }
+};
+
+// Controller function to update a Pipe by ID
+const updatePipe = async (req, res) => {
+  try {
+    const pipeId = mongoose.Types.ObjectId(req.params);
+    const { segments } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(pipeId)) {
+      return res.status(400).json({ error: "Invalid Pipe ID provided" });
     }
-  };
-  
-  // Controller function to update a Pipe by ID
-  const updatePipe = async (req, res) => {
-    try {
-      const  pipeId  = mongoose.Types.ObjectId(req.params);
-      const { segments } = req.body;
-  
-      if (!mongoose.Types.ObjectId.isValid(pipeId)) {
-        return res.status(400).json({ error: 'Invalid Pipe ID provided' });
+
+    const existingPipe = await Pipe.findById(pipeId);
+    if (!existingPipe) {
+      return res.status(404).json({ error: "Pipe not found" });
+    }
+    const createOrFindCoord = async (coordData) => {
+      const { longitude, latitude } = coordData;
+      const existingCoord = await Coord.findOne({ longitude, latitude });
+      if (existingCoord) {
+        return existingCoord._id;
       }
-  
-      const existingPipe = await Pipe.findById(pipeId);
-      if (!existingPipe) {
-        return res.status(404).json({ error: 'Pipe not found' });
-      }
-      const createOrFindCoord = async (coordData) => {
-        const { longitude, latitude } = coordData;
-        const existingCoord = await Coord.findOne({ longitude, latitude });
-        if (existingCoord) {
-          return existingCoord._id;
-        }
-        // Check if a Coord document with the same coordinates exists
-          const newCoord = new Coord({
-            longitude,
-            latitude
-            // Assign the Address ID to the Coord
+      // Check if a Coord document with the same coordinates exists
+      const newCoord = new Coord({
+        longitude,
+        latitude,
+        // Assign the Address ID to the Coord
+      });
+
+      const coord = await newCoord.save(); // Save the new Coord
+
+      return coord._id; // Return the Coord ID
+    };
+
+    // Update or create new PipeSegments
+    const createOrUpdateSegments = async () => {
+      const updatedSegments = [];
+      for (const segmentData of segments) {
+        const { coords, attributes } = segmentData;
+        const coordIds = await Promise.all(coords.map(createOrFindCoord));
+
+        // Check if the segment exists for the pipe
+        const existingSegment = await PipeSegment.findOne({
+          pipeId: existingPipe._id,
+        });
+        if (existingSegment) {
+          // Update existing segment
+          existingSegment.coor_id = coordIds;
+          // Update other fields as needed
+          const updatedSegment = await existingSegment.save();
+          updatedSegments.push(updatedSegment);
+        } else {
+          // Create new segment
+          const newSegment = new PipeSegment({
+            pipeId: existingPipe._id,
+            coor_id: coordIds,
+            attributes,
           });
-  
-      const  coord = await newCoord.save(); // Save the new Coord
-        
-  
-        return coord._id; // Return the Coord ID
-      };
-  
-      // Update or create new PipeSegments
-      const createOrUpdateSegments = async () => {
-        const updatedSegments = [];
-        for (const segmentData of segments) {
-          const { coords, attributes } = segmentData;
-          const coordIds = await Promise.all(coords.map(createOrFindCoord));
-  
-          // Check if the segment exists for the pipe
-          const existingSegment = await PipeSegment.findOne({ pipeId: existingPipe._id });
-          if (existingSegment) {
-            // Update existing segment
-            existingSegment.coor_id = coordIds;
-            // Update other fields as needed
-            const updatedSegment = await existingSegment.save();
-            updatedSegments.push(updatedSegment);
-          } else {
-            // Create new segment
-            const newSegment = new PipeSegment({
-              pipeId: existingPipe._id,
-              coor_id: coordIds,
-              attributes
-            });
-            const savedSegment = await newSegment.save();
-            updatedSegments.push(savedSegment);
-          }
+          const savedSegment = await newSegment.save();
+          updatedSegments.push(savedSegment);
         }
-        return updatedSegments;
-      };
-  
-      const updatedSegments = await createOrUpdateSegments();
-  
-      res.status(200).json({ pipe: existingPipe, segments: updatedSegments });
-    } catch (error) {
-      console.error('Error updating Pipe:', error);
-      res.status(500).json({ error: 'Failed to update Pipe and Segments' });
-    }
-  };
-  
-  // Controller function to get all segments by Pipe ID
-  const getSegmentsByPipeId = async (req, res) => {
-      const  pipeId  = mongoose.Types.ObjectId(req.params);
-        
-      if (!mongoose.Types.ObjectId.isValid(pipeId)) {
-        return res.status(400).json({ error: 'Invalid Pipe ID provided' });
       }
-    
-    try {
-      // Find the Pipe by ID to check if it exists
-      const pipe = await Pipe.findById(pipeId);
-      if (!pipe) {
-        return res.status(404).json({ error: 'Pipe not found' });
-      }
-  
-      // Find all segments related to the Pipe ID
-      const segments = await PipeSegment.find({ pipeId });
-  
-      res.status(200).json(segments);
-    } catch (error) {
-      console.error('Error retrieving segments by Pipe ID:', error);
-      res.status(500).json({ error: 'Failed to retrieve segments' });
+      return updatedSegments;
+    };
+
+    const updatedSegments = await createOrUpdateSegments();
+
+    res.status(200).json({ pipe: existingPipe, segments: updatedSegments });
+  } catch (error) {
+    console.error("Error updating Pipe:", error);
+    res.status(500).json({ error: "Failed to update Pipe and Segments" });
+  }
+};
+
+// Controller function to get all segments by Pipe ID
+const getSegmentsByPipeId = async (req, res) => {
+  const pipeId = mongoose.Types.ObjectId(req.params);
+
+  if (!mongoose.Types.ObjectId.isValid(pipeId)) {
+    return res.status(400).json({ error: "Invalid Pipe ID provided" });
+  }
+
+  try {
+    // Find the Pipe by ID to check if it exists
+    const pipe = await Pipe.findById(pipeId);
+    if (!pipe) {
+      return res.status(404).json({ error: "Pipe not found" });
     }
-  };
-  // Controller function to delete a Pipe by ID
-  const deletePipeById = async (req, res) => {
-    const { id } = req.params;
-    try {
-      const deletedPipe = await Pipe.findByIdAndDelete(id);
-      if (!deletedPipe) {
-        return res.status(404).json({ error: 'Pipe not found' });
-      }
-      res.status(200).json({ message: 'Pipe deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting Pipe by ID:', error);
-      res.status(500).json({ error: 'Failed to delete Pipe' });
+
+    // Find all segments related to the Pipe ID
+    const segments = await PipeSegment.find({ pipeId });
+
+    res.status(200).json(segments);
+  } catch (error) {
+    console.error("Error retrieving segments by Pipe ID:", error);
+    res.status(500).json({ error: "Failed to retrieve segments" });
+  }
+};
+// Controller function to delete a Pipe by ID
+const deletePipeById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedPipe = await Pipe.findByIdAndDelete(id);
+    if (!deletedPipe) {
+      return res.status(404).json({ error: "Pipe not found" });
     }
-  };
-  
-  module.exports = {
-    createPipe,
-    getAllPipes,
-    getPipeById,
-    updatePipe,
-    deletePipeById,
-    getSegmentsByPipeId
-    
-  };
+    res.status(200).json({ message: "Pipe deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting Pipe by ID:", error);
+    res.status(500).json({ error: "Failed to delete Pipe" });
+  }
+};
+
+module.exports = {
+  createPipe,
+  getAllPipes,
+  getPipeById,
+  updatePipe,
+  deletePipeById,
+  getSegmentsByPipeId,
+};
