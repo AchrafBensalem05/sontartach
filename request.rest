@@ -30,7 +30,7 @@ x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGRhYzQyODc4Nzl
 ###### 
 POST http://localhost:8080/well/create-well
 Content-Type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGRhYzQyODc4NzlkYWI4MTgyYmI3MSIsImlhdCI6MTcxNjM2NjQxMiwiZXhwIjoxNzE2NDUyODEyfQ.Jgj7P8yjZ4ERqj7nh6_hjGymPZHk0ksno7sybUKXZGc
+# x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGRhYzQyODc4NzlkYWI4MTgyYmI3MSIsImlhdCI6MTcxNjM2NjQxMiwiZXhwIjoxNzE2NDUyODEyfQ.Jgj7P8yjZ4ERqj7nh6_hjGymPZHk0ksno7sybUKXZGc
 
 {
   "name": "Well990 ",
@@ -69,8 +69,9 @@ Content-Type: application/json
 }
 
 ######
-GET http://localhost:8080/well
-Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGRhYzQyODc4NzlkYWI4MTgyYmI3MSIsImlhdCI6MTcxNjM2NjQxMiwiZXhwIjoxNzE2NDUyODEyfQ.Jgj7P8yjZ4ERqj7nh6_hjGymPZHk0ksno7sybUKXZGc
+GET http://localhost:8080/well/get-wells
+
+# Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NGRhYzQyODc4NzlkYWI4MTgyYmI3MSIsImlhdCI6MTcxNjM2NjQxMiwiZXhwIjoxNzE2NDUyODEyfQ.Jgj7P8yjZ4ERqj7nh6_hjGymPZHk0ksno7sybUKXZGc
 
 ###### 
 PATCH http://localhost:8080/well/6633d0ebb0710cd83a14a0d2
@@ -90,11 +91,11 @@ Content-Type: application/json
 GET http://localhost:8080/manufold
 
 ######    
-POST http://localhost:8080/manufold/create-manufold
+POST http://localhost:8080/junction/create-junction
 Content-Type: application/json
 
 {
-  "name": "manufold 1",
+  "name": "junction 1",
   "attributes": [
     { "name": "temp", "value": 40 },
     { "name": "press", "value": 500 },

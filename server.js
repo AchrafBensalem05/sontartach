@@ -69,6 +69,7 @@ const manufoldRoutes = require('./app/routes/manufold.routes')
 const Manufold = require("./app/models/manufold")
 const inspectionRoutes= require('./app/routes/inspection.routes')
 const authentication= require('./app/routes/auth.routes');
+const junctionRoutes= require('./app/routes/junction.routes')
 
 // Use the wellRoutes for handling well-related routes
 app.use('/pipe',pipeRoutes)
@@ -77,6 +78,7 @@ app.use('/manifold',manufoldRoutes);
 app.use('/inspection', inspectionRoutes);
 app.use('/telemetry',telemetryRoutes)
 app.use('/auth', authentication);
+app.use('/junction',junctionRoutes)
 
 
 cron.schedule('*/100 * * * *', async () => {
