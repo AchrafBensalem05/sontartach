@@ -5,10 +5,10 @@ const authenticateToken = require('../middlewares/auth'); // Import the middlewa
 const router = express.Router();
 
 // Route to create a new Pipe
-router.post('/create-pipe',pipeController.createPipe);
+router.post('/create-pipe', authenticateToken.authenticateToken, pipeController.createPipe);
 
 // Route to get all Pipes
-router.get('/', authenticateToken.authenticateToken,authenticateToken.isPipeAdmin , pipeController.getAllPipes);
+router.get('/', authenticateToken.authenticateToken , pipeController.getAllPipes);
 
 // Route to get all segments by Pipe ID
 router.get('/:id/segments', authenticateToken.authenticateToken, pipeController.getSegmentsByPipeId);
@@ -17,7 +17,7 @@ router.get('/:id/segments', authenticateToken.authenticateToken, pipeController.
 router.get('/:id', authenticateToken.authenticateToken, pipeController.getPipeById);
 
 // Route to update a Pipe by ID
-router.patch('/:id', authenticateToken.authenticateToken, pipeController.updatePipe);
+router.patch('/:id', authenticateToken.authenticateToken, authenticateToken.isPipeAdmin, pipeController.updatePipe);
 
 // Route to delete a Pipe by ID
 router.delete('/:id', authenticateToken.authenticateToken, pipeController.deletePipeById);

@@ -15,7 +15,7 @@ const addWellsFromCSV = async (req, res) => {
     if (!req.file || !req.file.path) {
       throw new Error("CSV file not uploaded or invalid file path.");
     }
-
+    console.log('this is the ',req)
     const filePath = req.file.path;
     const wells = [];
 
@@ -175,6 +175,20 @@ const createWell = async (req, res) => {
 
     // Save the new Infrastracture document to the database
     const savedInfrastracture = await newInfrastracture.save();
+
+    // Create a new Well document with the reference to the Infrastracture document
+    // const newWell = new Well({
+    //   Infrastracture: savedInfrastracture._id,
+    //   order_date,
+    //   gor,
+    //   oil,
+    //   gas
+    // });
+    if (!name || !attributes || !Array.isArray(attributes) || attributes.length === 0) {
+      return res.status(400).json({ error: 'Invalid request body' });
+    }
+
+    // Create a new Well document
     const newWell = new Well({
       ID: savedInfrastracture._id,
       name,

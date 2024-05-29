@@ -9,7 +9,7 @@ mongoose.connect('mongodb://localhost:27017/authentication', {
 
 const roles = [
   { name: 'viewer' },
-  { name: 'manufoldAdmin' },
+  { name: 'inspectionAdmin' },
   { name: 'pipeAdmin' },
   { name: 'wellAdmin' },
   {name:  'admin'}
