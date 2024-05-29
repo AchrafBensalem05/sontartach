@@ -256,7 +256,9 @@ const getWellById = async (req, res) => {
     }
     const wellType = await WellType.findOne({ well_id: id });
     const {date}=wellType
-    console.log('daaaaaaaaate', date)
+    console.log('daaaaaaaaaaaate',date)
+    const dateISOString = date.toISOString();
+    const [desiredDateFormat] = dateISOString.split('T');
     const transformedWells ={
       _id: wellItem._id,
       ID: wellItem.ID._id,
@@ -275,6 +277,7 @@ const getWellById = async (req, res) => {
       },
       elevation: wellItem.ID.coord_id.elevation,
       wellType: wellType.toObject(),
+      formattedDate:desiredDateFormat
     };
     console.log(transformedWells)
     res.status(200).json(transformedWells);
