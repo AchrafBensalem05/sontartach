@@ -121,11 +121,44 @@ const getAllManufolds = async (req, res) => {
 const getManufoldById = async (req, res) => {
   const { id } = req.params;
   try {
-    const manufold = await Manufold.findById(id);
+    const manufold = await Manufold.findById(id).populate({
+      path: "ID",
+      populate: {
+        path: "coord_id",
+        model: "Coord",
+        populate: {
+          path: "idAdr",
+        },
+      },
+    })
+
     if (!manufold) {
-      return res.status(404).json({ error: 'manufold not found' });
+      return res.status(404).json({ error: "manufold not found" });
     }
-    res.status(200).json(manufold);
+    const dateISOString = date.toISOString();
+    const [desiredDateFormat] = dateISOString.split('T');
+    const transformedWells ={
+      _id: wellItem._id,
+      ID: wellItem.ID._id,
+      name: wellItem.name,
+      attributes: wellItem.attributes,
+      address: {
+        _id: wellItem.ID.coord_id.idAdr._id,
+        centre: wellItem.ID.coord_id.idAdr.centre,
+        region: wellItem.ID.coord_id.idAdr.region,
+        zone: wellItem.ID.coord_id.idAdr.zone,
+        wilaya: wellItem.ID.coord_id.idAdr.wilaya,
+      },
+      coords: {
+        longitude: wellItem.ID.coord_id.longitude,
+        latitude: wellItem.ID.coord_id.latitude,
+      },
+      elevation: wellItem.ID.coord_id.elevation,
+      wellType: wellType.toObject(),
+      formattedDate:desiredDateFormat
+    };
+    console.log(transformedWells)
+    res.status(200).json(transformedWells);
   } catch (error) {
     console.error('Error fetching manufold:', error);
     res.status(500).json({ error: 'Failed to fetch manufold' });

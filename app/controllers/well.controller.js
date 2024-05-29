@@ -224,7 +224,9 @@ const getAllWells = async (req, res) => {
         },
       },
     });
-
+    if (!wells) {
+      return res.status(404).json({ error: 'wells not found' });
+    }
     const transformedWells = wells.map((well) => ({
       _id: well._id,
       ID: well.ID._id,
