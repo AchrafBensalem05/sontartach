@@ -125,16 +125,7 @@ const createWell = async (req, res) => {
 
     // Save the new Infrastracture document to the database
     const savedInfrastracture = await newInfrastracture.save();
-
-    // Create a new Well document with the reference to the Infrastracture document
-    // const newWell = new Well({
-    //   Infrastracture: savedInfrastracture._id,
-    //   order_date,
-    //   gor,
-    //   oil,
-    //   gas
-    // });
-    // console.log(req);
+    
     if (!name || !attributes || !Array.isArray(attributes) || attributes.length === 0) {
       // console.log(req);
       return res.status(400).json({ error: 'Invalid request body' });
