@@ -73,7 +73,7 @@ const authentication= require('./app/routes/auth.routes');
 // Use the wellRoutes for handling well-related routes
 app.use('/pipe',pipeRoutes)
 app.use('/well', wellRoutes);
-app.use('/manufold',manufoldRoutes);
+app.use('/manifold',manufoldRoutes);
 app.use('/inspection', inspectionRoutes);
 app.use('/telemetry',telemetryRoutes)
 app.use('/auth', authentication);

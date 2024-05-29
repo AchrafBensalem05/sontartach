@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const createManufold = async (req, res) => {
   try {
     // Extract data from the request body
+    console.log('zzzzzzzzzz')
+    console.log('body',req.body)
     const { name, attributes, centre, region, zone, wilaya, longitude, latitude, elevation } = req.body;
     // Create a new Address document
     const newAddress = new Address({
@@ -15,10 +17,10 @@ const createManufold = async (req, res) => {
       zone,
       wilaya
     });
-
+    console.log('ddddd')
     // Save the new Address document to the database
     const savedAddress = await newAddress.save();
-
+    console.log('ccccc')
     // Create a new Coord document
     const newCoord = new Coord({
       longitude,
@@ -29,11 +31,13 @@ const createManufold = async (req, res) => {
 
     // Save the new Coord document to the database
     const savedCoord = await newCoord.save();
+    console.log('eeeee')
 
     // Create a new Infrastracture document
     const newInfrastracture = new Infrastracture({
       coord_id: savedCoord._id
     });
+    console.log('fffffff')
 
     // Save the new Infrastracture document to the database
     const savedInfrastracture = await newInfrastracture.save();
@@ -46,14 +50,16 @@ const createManufold = async (req, res) => {
     //   oil,
     //   gas
     // });
-    if (!name || !attributes || !Array.isArray(attributes) || attributes.length === 0) {
-      return res.status(400).json({ error: 'Invalid request body' });
-    }
+    // if (!name || !attributes || !Array.isArray(attributes) || attributes.length === 0) {
+    //   return res.status(400).json({ error: 'Invalid request body' });
+    // }
+    console.log('xxxxxx')
 
     // Create a new manufold document
     const newManufold = new Manufold({
-      Infrastracture: savedInfrastracture._id,
+      ID: savedInfrastracture._id,
       name });
+      console.log('qqqqqqq')
 
     // Add dynamic attributes to the manufold document
     attributes.forEach(({ name, value }) => {
@@ -62,7 +68,9 @@ const createManufold = async (req, res) => {
     // Save the new manufold document to the database
     const savedManufold = await newManufold.save();
 
-    res.status(201).json(savedManufold);
+    res.status(201).json({message: "you ccreated user successfully",savedManufold});
+    console.log('doooooooooo')
+
   } catch (error) {
     console.error('Error creating manufold:', error);
     res.status(500).json({ error: 'Failed to create manufold' });
@@ -71,11 +79,42 @@ const createManufold = async (req, res) => {
 ////
 const getAllManufolds = async (req, res) => {
   try {
-    const manufolds = await Manufold.find();
-    res.status(200).json(manufolds);
+    console.log("staaaaaaaaaaart");
+    const manifolds = await Manufold.find().populate({
+      path: "ID",
+      populate: {
+        path: "coord_id",
+        model: "Coord",
+        populate: {
+          path: "idAdr",
+        },
+      },
+    });
+
+    const transformedManifolds = manifolds.map((manifold) => ({
+      _id: manifold._id,
+      ID:manifold.ID._id,
+      name:manifold.name,
+      attributes:manifold.attributes,
+      address: {
+        _id:manifold.ID.coord_id.idAdr._id,
+        centre:manifold.ID.coord_id.idAdr.centre,
+        region:manifold.ID.coord_id.idAdr.region,
+        zone:manifold.ID.coord_id.idAdr.zone,
+        wilaya:manifold.ID.coord_id.idAdr.wilaya,
+      },
+      coords: {
+        longitude:manifold.ID.coord_id.longitude,
+        latitude:manifold.ID.coord_id.latitude,
+      },
+      elevation:manifold.ID.coord_id.elevation,
+    }));
+
+    res.status(200).json(transformedManifolds);
+    console.log("eeeednd");
   } catch (error) {
-    console.error('Error fetching manufolds:', error);
-    res.status(500).json({ error: 'Failed to fetch manufolds' });
+    console.error("Error fetching Wells:", error);
+    res.status(500).json({ error: "Failed to fetch Wells" });
   }
 };
 ////////
