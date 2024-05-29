@@ -1,10 +1,10 @@
-const Manufold = require('../models/manufold'); // Import the manufold model
+const Junction = require('../models/junction'); // Import the junction model
 const Infrastracture = require('../models/infrastracture'); // Import the Infrastracture model
 const Coord = require('../models/coord'); // Import the Coord model
 const Address = require('../models/address'); // Import the Address model
 const mongoose = require('mongoose');
-// Controller function to handle creating a new manufold, Infrastracture, Coord, and Address
-const createManufold = async (req, res) => {
+// Controller function to handle creating a new junction, Infrastracture, Coord, and Address
+const createJunction = async (req, res) => {
   try {
     // Extract data from the request body
     console.log('zzzzzzzzzz')
@@ -44,32 +44,32 @@ const createManufold = async (req, res) => {
 
     console.log('xxxxxx')
 
-    // Create a new manufold document
-    const newManufold = new Manufold({
+    // Create a new junction document
+    const newJunction = new Junction({
       ID: savedInfrastracture._id,
       name });
       console.log('qqqqqqq')
 
-    // Add dynamic attributes to the manufold document
+    // Add dynamic attributes to the junction document
     attributes.forEach(({ name, value }) => {
-      newManufold.attributes.push({ name, value });
+      newJunction.attributes.push({ name, value });
     });
-    // Save the new manufold document to the database
-    const savedManufold = await newManufold.save();
+    // Save the new junction document to the database
+    const savedJunction = await newJunction.save();
 
-    res.status(201).json({message: "you ccreated user successfully",savedManufold});
+    res.status(201).json({message: "you ccreated user successfully",savedJunction});
     console.log('doooooooooo')
 
   } catch (error) {
-    console.error('Error creating manufold:', error);
-    res.status(500).json({ error: 'Failed to create manufold' });
+    console.error('Error creating junction:', error);
+    res.status(500).json({ error: 'Failed to create junction' });
   }
 };
 ////
-const getAllManufolds = async (req, res) => {
+const getAllJunctions = async (req, res) => {
   try {
     console.log("staaaaaaaaaaart");
-    const manifolds = await Manufold.find().populate({
+    const junctions = await Junction.find().populate({
       path: "ID",
       populate: {
         path: "coord_id",
@@ -80,26 +80,26 @@ const getAllManufolds = async (req, res) => {
       },
     });
 
-    const transformedManifolds = manifolds.map((manifold) => ({
-      _id: manifold._id,
-      ID:manifold.ID._id,
-      name:manifold.name,
-      attributes:manifold.attributes,
+    const transformedJunctions = junctions.map((junction) => ({
+      _id: junction._id,
+      ID:junction.ID._id,
+      name:junction.name,
+      attributes:junction.attributes,
       address: {
-        _id:manifold.ID.coord_id.idAdr._id,
-        centre:manifold.ID.coord_id.idAdr.centre,
-        region:manifold.ID.coord_id.idAdr.region,
-        zone:manifold.ID.coord_id.idAdr.zone,
-        wilaya:manifold.ID.coord_id.idAdr.wilaya,
+        _id:junction.ID.coord_id.idAdr._id,
+        centre:junction.ID.coord_id.idAdr.centre,
+        region:junction.ID.coord_id.idAdr.region,
+        zone:junction.ID.coord_id.idAdr.zone,
+        wilaya:junction.ID.coord_id.idAdr.wilaya,
       },
       coords: {
-        longitude:manifold.ID.coord_id.longitude,
-        latitude:manifold.ID.coord_id.latitude,
+        longitude:junction.ID.coord_id.longitude,
+        latitude:junction.ID.coord_id.latitude,
       },
-      elevation:manifold.ID.coord_id.elevation,
+      elevation:junction.ID.coord_id.elevation,
     }));
 
-    res.status(200).json(transformedManifolds);
+    res.status(200).json(transformedJunctions);
     console.log("eeeednd");
   } catch (error) {
     console.error("Error fetching Wells:", error);
@@ -107,58 +107,58 @@ const getAllManufolds = async (req, res) => {
   }
 };
 ////////
-const getManufoldById = async (req, res) => {
+const getJunctionById = async (req, res) => {
   const { id } = req.params;
   try {
-    const manufold = await Manufold.findById(id);
-    if (!manufold) {
-      return res.status(404).json({ error: 'manufold not found' });
+    const junction = await Junction.findById(id);
+    if (!junction) {
+      return res.status(404).json({ error: 'junction not found' });
     }
-    res.status(200).json(manufold);
+    res.status(200).json(junction);
   } catch (error) {
-    console.error('Error fetching manufold:', error);
-    res.status(500).json({ error: 'Failed to fetch manufold' });
+    console.error('Error fetching junction:', error);
+    res.status(500).json({ error: 'Failed to fetch junction' });
   }
 };
 /////////
-const updateManufoldById = async (req, res) => {
+const updateJunctionById = async (req, res) => {
   const { id } = req.params;
   const { name, attributes } = req.body;
   try {
     // Check if the provided ID is a valid ObjectId string
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid Manufold ID' });
+      return res.status(400).json({ error: 'Invalid Junction ID' });
     }
 
-    // Find the Manufold document by ID
-    const manufold = await Manufold.findById(id);
-    if (!manufold) {
-      return res.status(404).json({ error: 'Manufold not found' });
+    // Find the Junction document by ID
+    const junction = await Junction.findById(id);
+    if (!junction) {
+      return res.status(404).json({ error: 'Junction not found' });
     }
 
-    // Update Manufold properties if provided
-    if (name) manufold.name = name;
+    // Update Junction properties if provided
+    if (name) junction.name = name;
     // Update dynamic attributes if provided
     if (attributes && Array.isArray(attributes) && attributes.length > 0) {
       attributes.forEach(({ name, value }) => {
-        const existingAttribute = manufold.attributes.find(attr => attr.name === name);
+        const existingAttribute = junction.attributes.find(attr => attr.name === name);
         if (existingAttribute) {
           existingAttribute.value = value;
         } else {
-          manufold.attributes.push({ name, value });
+          junction.attributes.push({ name, value });
         }
       });
     }
-    // Save the updated Manufold document
-    const updatedManufold = await manufold.save();
+    // Save the updated Junction document
+    const updatedJunction = await junction.save();
 
-    res.status(200).json(updatedManufold);
+    res.status(200).json(updatedJunction);
   } catch (error) {
-    console.error('Error updating Manufold:', error);
-    res.status(500).json({ error: 'Failed to update Manufold' });
+    console.error('Error updating Junction:', error);
+    res.status(500).json({ error: 'Failed to update Junction' });
   }
 };
 
 module.exports = {
-  createManufold, getAllManufolds, getManufoldById, updateManufoldById
+  createJunction, getAllJunctions, getJunctionById, updateJunctionById
 };
