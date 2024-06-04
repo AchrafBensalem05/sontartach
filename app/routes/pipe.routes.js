@@ -1,14 +1,15 @@
 const express = require('express');
 const pipeController = require('../controllers/pipe.controller');
 const authenticateToken = require('../middlewares/auth'); // Import the middleware for authentication
+const upload = require('../middlewares/upload');
 
 const router = express.Router();
 
 // Route to create a new Pipe
-router.post('/create-pipe', authenticateToken.authenticateToken, pipeController.createPipe);
+router.post('/create-pipe', pipeController.createPipe);
 
 // Route to get all Pipes
-router.get('/', authenticateToken.authenticateToken , pipeController.getAllPipes);
+router.get('/' , pipeController.getAllPipes);
 
 // Route to get all segments by Pipe ID
 router.get('/:id/segments', authenticateToken.authenticateToken, pipeController.getSegmentsByPipeId);
@@ -21,6 +22,10 @@ router.patch('/:id', authenticateToken.authenticateToken, authenticateToken.isPi
 
 // Route to delete a Pipe by ID
 router.delete('/:id', authenticateToken.authenticateToken, pipeController.deletePipeById);
+
+router.post('/:id/createStatus', upload.single('file'), pipeController.createPipeStatusHistory);
+
+router.post('/:id/createStatusCsv', upload.single('file'), pipeController.createMultiplePipeStatuses)
 
 
 module.exports = router;

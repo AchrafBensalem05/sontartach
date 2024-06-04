@@ -3,7 +3,13 @@ const Pipe = require("../models/pipe"); // Import the Pipe model
 const Coord = require("../models/coord");
 const PipeSegment = require("../models/pipeSegment"); // Adjust the path as per your project structure
 const Infrastracture = require("../models/infrastracture"); // Import the Infrastracture model
-
+const PipeStatus = require("../models/pipeStatus");
+const multer = require('multer');
+const csv = require('csv-parser');
+const fs = require('fs');
+const express = require('express');
+const { ConnectionPoolClosedEvent } = require("mongodb");
+const { log } = require("console");
 // Controller function to handle creating a new Pipe
 // const createPipe = async (req, res) => {
 //   try {
@@ -46,11 +52,11 @@ const Infrastracture = require("../models/infrastracture"); // Import the Infras
 // Controller function to handle creating a new Pipe
 const createPipe = async (req, res) => {
   try {
-    const [result, segments] = req.body;
+    const {result, segments} = req.body;
     console.log("kkkkkk", result);
 
     // Extract data from the request body
-    const { from_id, to_id, length, connectionType, type, nature,newTotalDistance } = result;
+    const { from_id, to_id, length, connectionType, type,status, status_date, nature,newTotalDistance } = result;
     const [firstSegment] = segments;
     const { coords, attributes } = firstSegment;
 
@@ -124,7 +130,7 @@ const createPipe = async (req, res) => {
       }
       return createdSegments;
     };
-
+    createPipeStatus(type,status_date,savedPipe);
     const createdSegments = await createSegments();
 
     res.status(201).json({ pipe: savedPipe, segments: createdSegments });
@@ -142,6 +148,72 @@ const getAllPipes = async (req, res) => {
   } catch (error) {
     console.error("Error getting Pipes:", error);
     res.status(500).json({ error: "Failed to get Pipes" });
+  }
+};
+
+
+const createPipeStatus = async (status, date, savedPipe) => {
+  if (status) {
+    const newPipeStatus = new PipeStatus({
+      pipe_id: savedPipe._id,
+      status,
+      date: new Date(date),
+    });
+    return await newPipeStatus.save();
+  }
+};
+
+const createPipeStatusHistory = async (req, res) => {
+  try {
+    console.log(req.file,req.params)
+    if (!req.file || !req.file.path) {
+      throw new Error("CSV file not uploaded or invalid file path.");
+    }
+
+    const { pipeId } = req.params;
+    log(req.params)
+    if (!req.params) {
+      throw new Error("Pipe ID not provided.");
+    }
+
+    const filePath = req.file.path;
+    const statuses = [];
+
+    // Read and parse the CSV file
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on("data", (row) => {
+        const statusData = {
+          pipe_id: pipeId,
+          status: row.status,
+          date: new Date(row.status_date)
+        };
+
+        statuses.push(statusData);
+      })
+      .on("end", async () => {
+        try {
+          const savedStatuses = [];
+          for (const statusData of statuses) {
+            const newPipeStatus = new PipeStatus(statusData);
+            const savedStatus = await newPipeStatus.save();
+            savedStatuses.push(savedStatus);
+          }
+
+          console.log("Successfully added pipe statuses:", savedStatuses);
+          res.status(201).json({ message: "Pipe statuses added successfully", statuses: savedStatuses });
+        } catch (error) {
+          console.error("Error adding pipe statuses:", error);
+          res.status(500).json({ error: "Failed to add pipe statuses" });
+        }
+      })
+      .on("error", (error) => {
+        console.error("Error reading CSV file:", error);
+        res.status(500).json({ error: "Failed to read CSV file" });
+      });
+  } catch (error) {
+    console.error("Error processing CSV file:", error);
+    res.status(500).json({ error: "Failed to process CSV file" });
   }
 };
 
@@ -271,6 +343,43 @@ const deletePipeById = async (req, res) => {
   }
 };
 
+
+const upload = multer({ dest: 'uploads/' }); // Define storage for multer
+
+const createMultiplePipeStatuses = async (req, res) => {
+  const { id } = req.params;
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).json({ error: "CSV file is required." });
+  }
+
+  const pipeStatuses = [];
+
+  fs.createReadStream(file.path)
+    .pipe(csv())
+    .on('data', (row) => {
+      const { status, status_date } = row;
+      if (status && status_date) {
+        pipeStatuses.push(new PipeStatus({
+          pipe_id: id,
+          status,
+          date: new Date(status_date),
+        }));
+      }
+    })
+    .on('end', async () => {
+      try {
+        const savedStatuses = await PipeStatus.insertMany(pipeStatuses);
+        return res.status(201).json(savedStatuses);
+      } catch (error) {
+        return res.status(500).json({ error: error.message });
+      } finally {
+        fs.unlinkSync(file.path); // Clean up the uploaded file
+      }
+    });
+};
+
 module.exports = {
   createPipe,
   getAllPipes,
@@ -278,4 +387,6 @@ module.exports = {
   updatePipe,
   deletePipeById,
   getSegmentsByPipeId,
+  createPipeStatusHistory,
+  createMultiplePipeStatuses 
 };
