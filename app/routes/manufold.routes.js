@@ -1,11 +1,12 @@
 const express = require('express');
 
 const manufoldController = require('../controllers/manufold.controller');
+const { upload2, upload } = require('../middlewares/multer');
 
 const router = express.Router();
 
 // Route to create a new manufold
-router.post('/create-manifold', manufoldController.createManufold);
+router.post('/create-manifold',upload.fields([{name: 'file', maxCount: 2},{name: 'planFile', maxCount: 2}]),manufoldController.createManufold);
 
 
 // Route to get all manufolds

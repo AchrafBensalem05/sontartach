@@ -9,7 +9,7 @@ const createJunction = async (req, res) => {
     // Extract data from the request body
     console.log('zzzzzzzzzz')
     console.log('body',req.body)
-    const { name, attributes, centre, region, zone, wilaya, longitude, latitude, elevation } = req.body;
+    const { name, attributes, centre, region, zone, wilaya, longitude, latitude, elevation,date } = req.body;
     // Create a new Address document
     const newAddress = new Address({
       centre,
@@ -47,7 +47,9 @@ const createJunction = async (req, res) => {
     // Create a new junction document
     const newJunction = new Junction({
       ID: savedInfrastracture._id,
-      name });
+      name:name ,
+      date:date
+    });
       console.log('qqqqqqq')
 
     // Add dynamic attributes to the junction document
@@ -110,11 +112,49 @@ const getAllJunctions = async (req, res) => {
 const getJunctionById = async (req, res) => {
   const { id } = req.params;
   try {
-    const junction = await Junction.findById(id);
+    const junction = await Junction.findById(id).populate({
+      path: "ID",
+      populate: {
+        path: "coord_id",
+        model: "Coord",
+        populate: {
+          path: "idAdr",
+        },
+      },
+    })
+    console.log('debbbbbbbbut')
     if (!junction) {
-      return res.status(404).json({ error: 'junction not found' });
+      return res.status(404).json({ error: "manufold not found" });
     }
-    res.status(200).json(junction);
+    // const dateISOString = date.toISOString();
+    // const [desiredDateFormat] = dateISOString.split('T');
+
+    console.log('raniaaaaaaaaaaaaaaaaaaaaa')
+    const dateISOString = junction.date.toISOString();
+    const [desiredDateFormat] = dateISOString.split('T');
+    const transformedJunction ={
+      _id: junction._id,
+      ID: junction.ID._id,
+      name: junction.name,
+      date: junction.date,
+      attributes: junction.attributes,
+      address: {
+        _id: junction.ID.coord_id.idAdr._id,
+        centre: junction.ID.coord_id.idAdr.centre,
+        region: junction.ID.coord_id.idAdr.region,
+        zone: junction.ID.coord_id.idAdr.zone,
+        wilaya: junction.ID.coord_id.idAdr.wilaya,
+      },
+      coords: {
+        longitude: junction.ID.coord_id.longitude,
+        latitude: junction.ID.coord_id.latitude,
+      },
+      elevation: junction.ID.coord_id.elevation,
+      formattedDate:desiredDateFormat
+      // formattedDate:desiredDateFormat
+    };
+    console.log(transformedJunction)
+    res.status(200).json(transformedJunction);
   } catch (error) {
     console.error('Error fetching junction:', error);
     res.status(500).json({ error: 'Failed to fetch junction' });

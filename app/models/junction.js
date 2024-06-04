@@ -11,7 +11,8 @@ const attributeSchema = new mongoose.Schema({
 const JunctionSchema = new mongoose.Schema({
   ID: { type: mongoose.Schema.Types.ObjectId, ref:"Infrastracture" },
   name: { type: String, required: true },
-  attributes: [attributeSchema]
+  attributes: [attributeSchema],
+  date:{type: Date, required: true}
 });
 
 const Junction  = mongoose.model('Junction', JunctionSchema);
