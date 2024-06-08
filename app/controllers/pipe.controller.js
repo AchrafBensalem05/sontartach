@@ -56,13 +56,14 @@ const createPipe = async (req, res) => {
     console.log("kkkkkk", result);
 
     // Extract data from the request body
-    const { from_id, to_id, length, connectionType, type,status, status_date, nature,newTotalDistance } = result;
-    const [firstSegment] = segments;
-    const { coords, attributes } = firstSegment;
+    const { from_id, to_id, connectionType, type,date, nature,newTotalDistance,coords } = result;
+    console.log("oiiiiiiiiiiiiiii",segments)
+    // for (const segmentData of segments) {
+    //   console.log('segmeeeeeeeeeeeeeeeent',segmentData)
+    //   const { coords, attributes } = segmentData;
+    //   console.log('cooooooooooooooooooooords',coords)
 
-    console.log("Coords:", coords[0]); // Access the nested array of coordinates
-    console.log("Attributes:", attributes);
-
+    // }
     //   if (!mongoose.Types.ObjectId.isValid(from_id) || !mongoose.Types.ObjectId.isValid(to_id)) {
     //   return res.status(400).json({ error: 'Invalid ObjectId provided' });
     // }
@@ -110,10 +111,12 @@ const createPipe = async (req, res) => {
 
     // Save the new Pipe document to the database
     const savedPipe = await newPipe.save();
-    // Create segments for the pipe
+    // Create segments for the pipeµ
+    console.log('raaaaaaaaaaaaaaaaaaaaan')
     const createSegments = async () => {
       const createdSegments = [];
       for (const segmentData of segments) {
+        console.log('segmeeeeeeeeeeeeeeeent222222222211111111111',segmentData)
         const { coords, attributes } = segmentData;
         const coordIds = await Promise.all(coords.map(createOrFindCoord));
 
@@ -130,10 +133,11 @@ const createPipe = async (req, res) => {
       }
       return createdSegments;
     };
-    createPipeStatus(type,status_date,savedPipe);
+    // createPipeStatus(type,date,savedPipe);
     const createdSegments = await createSegments();
 
     res.status(201).json({ pipe: savedPipe, segments: createdSegments });
+    console.log('wooooooorks')
   } catch (error) {
     console.error("Error creating Pipe:", error);
     res.status(500).json({ error: "Failed to create Pipe and Segments" });

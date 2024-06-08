@@ -186,9 +186,9 @@ const createWell = async (req, res) => {
     //   gas
     // });
     // console.log(req);
-    if (!name || !attributes || !Array.isArray(attributes) || attributes.length === 0) {
-      return res.status(400).json({ error: 'Invalid request body' });
-    }
+    // if (!name || !attributes || !Array.isArray(attributes) || attributes.length === 0) {
+    //   return res.status(400).json({ error: 'Invalid request body' });
+    // }
 
     // Create a new Well document
     const newWell = new Well({
