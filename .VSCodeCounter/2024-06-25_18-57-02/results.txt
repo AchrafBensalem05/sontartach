@@ -1,0 +1,119 @@
+Date : 2024-06-25 18:57:02
+Directory : c:\Users\21365\Desktop\op\server
+Total : 82 files,  2873 codes, 310 comments, 502 blanks, all 3685 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| JavaScript     |         57 |      2,163 |        310 |        440 |      2,913 |
+| CSV            |         21 |        625 |          0 |         30 |        655 |
+| Markdown       |          1 |         44 |          0 |         31 |         75 |
+| JSON           |          1 |         38 |          0 |          1 |         39 |
+| JavaScript JSX |          1 |          2 |          0 |          0 |          2 |
+| Properties     |          1 |          1 |          0 |          0 |          1 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                               | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                  |         82 |      2,873 |        310 |        502 |      3,685 |
+| . (Files)                                                                          |          6 |        264 |         26 |         81 |        371 |
+| app                                                                                |         55 |      1,984 |        284 |        391 |      2,659 |
+| app\config                                                                         |          2 |          8 |          0 |          1 |          9 |
+| app\controllers                                                                    |         12 |      1,440 |        182 |        179 |      1,801 |
+| app\middlewares                                                                    |          7 |        192 |         59 |         51 |        302 |
+| app\models                                                                         |         24 |        234 |          9 |         90 |        333 |
+| app\routes                                                                         |         10 |        110 |         34 |         70 |        214 |
+| uploads                                                                            |         21 |        625 |          0 |         30 |        655 |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                           | language       | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| c:\Users\21365\Desktop\op\server\.env                                              | Properties     |          1 |          0 |          0 |          1 |
+| c:\Users\21365\Desktop\op\server\README.md                                         | Markdown       |         44 |          0 |         31 |         75 |
+| c:\Users\21365\Desktop\op\server\app\config\auth.config.js                         | JavaScript     |          3 |          0 |          1 |          4 |
+| c:\Users\21365\Desktop\op\server\app\config\db.config.js                           | JavaScript     |          5 |          0 |          0 |          5 |
+| c:\Users\21365\Desktop\op\server\app\controllers\auth.controller.js                | JavaScript     |         82 |          0 |          9 |         91 |
+| c:\Users\21365\Desktop\op\server\app\controllers\data.js                           | JavaScript     |          0 |          0 |          1 |          1 |
+| c:\Users\21365\Desktop\op\server\app\controllers\epnote.controller.js              | JavaScript     |         45 |          9 |          5 |         59 |
+| c:\Users\21365\Desktop\op\server\app\controllers\inspection.controller.js          | JavaScript     |         22 |          3 |          5 |         30 |
+| c:\Users\21365\Desktop\op\server\app\controllers\inspectionDepReport.controller.js | JavaScript     |         54 |          9 |          7 |         70 |
+| c:\Users\21365\Desktop\op\server\app\controllers\junction.controller.js            | JavaScript     |        167 |         22 |         16 |        205 |
+| c:\Users\21365\Desktop\op\server\app\controllers\manufold.controller.js            | JavaScript     |        245 |         24 |         29 |        298 |
+| c:\Users\21365\Desktop\op\server\app\controllers\pipe.controller.js                | JavaScript     |        402 |         71 |         52 |        525 |
+| c:\Users\21365\Desktop\op\server\app\controllers\pipelineOptimizer.js              | JavaScript     |         62 |          6 |         16 |         84 |
+| c:\Users\21365\Desktop\op\server\app\controllers\telemetry.controller.js           | JavaScript     |         45 |          2 |          8 |         55 |
+| c:\Users\21365\Desktop\op\server\app\controllers\user.controller.js                | JavaScript     |         12 |          0 |          4 |         16 |
+| c:\Users\21365\Desktop\op\server\app\controllers\well.controller.js                | JavaScript     |        304 |         36 |         27 |        367 |
+| c:\Users\21365\Desktop\op\server\app\middlewares\auth.js                           | JavaScript     |         35 |          0 |          7 |         42 |
+| c:\Users\21365\Desktop\op\server\app\middlewares\authJwt.js                        | JavaScript     |         54 |          1 |         10 |         65 |
+| c:\Users\21365\Desktop\op\server\app\middlewares\checkRole.js                      | JavaScript     |          0 |         50 |         10 |         60 |
+| c:\Users\21365\Desktop\op\server\app\middlewares\index.js                          | JavaScript     |          6 |          0 |          2 |          8 |
+| c:\Users\21365\Desktop\op\server\app\middlewares\multer.js                         | JavaScript     |         21 |          3 |          6 |         30 |
+| c:\Users\21365\Desktop\op\server\app\middlewares\upload.js                         | JavaScript     |         19 |          3 |          5 |         27 |
+| c:\Users\21365\Desktop\op\server\app\middlewares\verifySignUp.js                   | JavaScript     |         57 |          2 |         11 |         70 |
+| c:\Users\21365\Desktop\op\server\app\models\Ouvragetype.jsx                        | JavaScript JSX |          2 |          0 |          0 |          2 |
+| c:\Users\21365\Desktop\op\server\app\models\address.js                             | JavaScript     |          9 |          0 |          5 |         14 |
+| c:\Users\21365\Desktop\op\server\app\models\connection.js                          | JavaScript     |          2 |          0 |          2 |          4 |
+| c:\Users\21365\Desktop\op\server\app\models\construction.js                        | JavaScript     |          9 |          0 |          4 |         13 |
+| c:\Users\21365\Desktop\op\server\app\models\constructionstatus.js                  | JavaScript     |          8 |          0 |          4 |         12 |
+| c:\Users\21365\Desktop\op\server\app\models\coord.js                               | JavaScript     |          9 |          0 |          4 |         13 |
+| c:\Users\21365\Desktop\op\server\app\models\epnote.js                              | JavaScript     |          9 |          0 |          4 |         13 |
+| c:\Users\21365\Desktop\op\server\app\models\evaluation.js                          | JavaScript     |         10 |          0 |          4 |         14 |
+| c:\Users\21365\Desktop\op\server\app\models\index.js                               | JavaScript     |         20 |          2 |          6 |         28 |
+| c:\Users\21365\Desktop\op\server\app\models\infrastracture.js                      | JavaScript     |          5 |          0 |          2 |          7 |
+| c:\Users\21365\Desktop\op\server\app\models\inspection.js                          | JavaScript     |         13 |          0 |          4 |         17 |
+| c:\Users\21365\Desktop\op\server\app\models\inspectionDepReport.js                 | JavaScript     |          9 |          0 |          4 |         13 |
+| c:\Users\21365\Desktop\op\server\app\models\junction.js                            | JavaScript     |         13 |          0 |          8 |         21 |
+| c:\Users\21365\Desktop\op\server\app\models\manufold.js                            | JavaScript     |         19 |          0 |          5 |         24 |
+| c:\Users\21365\Desktop\op\server\app\models\nature.js                              | JavaScript     |          2 |          0 |          2 |          4 |
+| c:\Users\21365\Desktop\op\server\app\models\pipe.js                                | JavaScript     |         16 |          0 |          4 |         20 |
+| c:\Users\21365\Desktop\op\server\app\models\pipeSegment.js                         | JavaScript     |         13 |          6 |          7 |         26 |
+| c:\Users\21365\Desktop\op\server\app\models\pipeStatus.js                          | JavaScript     |          8 |          0 |          4 |         12 |
+| c:\Users\21365\Desktop\op\server\app\models\role.model.js                          | JavaScript     |          8 |          0 |          3 |         11 |
+| c:\Users\21365\Desktop\op\server\app\models\telemetry.js                           | JavaScript     |         12 |          0 |          4 |         16 |
+| c:\Users\21365\Desktop\op\server\app\models\type.js                                | JavaScript     |          2 |          0 |          0 |          2 |
+| c:\Users\21365\Desktop\op\server\app\models\user.model.js                          | JavaScript     |         14 |          0 |          3 |         17 |
+| c:\Users\21365\Desktop\op\server\app\models\well.js                                | JavaScript     |         14 |          1 |          3 |         18 |
+| c:\Users\21365\Desktop\op\server\app\models\wellType.js                            | JavaScript     |          8 |          0 |          4 |         12 |
+| c:\Users\21365\Desktop\op\server\app\routes\auth.routes.js                         | JavaScript     |         18 |          1 |          6 |         25 |
+| c:\Users\21365\Desktop\op\server\app\routes\epnote.routes.js                       | JavaScript     |          7 |          3 |          4 |         14 |
+| c:\Users\21365\Desktop\op\server\app\routes\inpectionDepReport.routes.js           | JavaScript     |          7 |          3 |          4 |         14 |
+| c:\Users\21365\Desktop\op\server\app\routes\inspection.routes.js                   | JavaScript     |          6 |          3 |          5 |         14 |
+| c:\Users\21365\Desktop\op\server\app\routes\junction.routes.js                     | JavaScript     |          8 |          5 |         10 |         23 |
+| c:\Users\21365\Desktop\op\server\app\routes\manufold.routes.js                     | JavaScript     |         10 |          5 |         12 |         27 |
+| c:\Users\21365\Desktop\op\server\app\routes\pipe.routes.js                         | JavaScript     |         14 |          6 |         12 |         32 |
+| c:\Users\21365\Desktop\op\server\app\routes\telemetry.routes.js                    | JavaScript     |          6 |          1 |          3 |         10 |
+| c:\Users\21365\Desktop\op\server\app\routes\user.routes.js                         | JavaScript     |         23 |          0 |          6 |         29 |
+| c:\Users\21365\Desktop\op\server\app\routes\well.routes.js                         | JavaScript     |         11 |          7 |          8 |         26 |
+| c:\Users\21365\Desktop\op\server\draft.js                                          | JavaScript     |         30 |         16 |         11 |         57 |
+| c:\Users\21365\Desktop\op\server\initroles.js                                      | JavaScript     |         26 |          0 |          5 |         31 |
+| c:\Users\21365\Desktop\op\server\package.json                                      | JSON           |         38 |          0 |          1 |         39 |
+| c:\Users\21365\Desktop\op\server\server.js                                         | JavaScript     |        125 |         10 |         33 |        168 |
+| c:\Users\21365\Desktop\op\server\uploads\1716044846140-file1.csv                   | CSV            |         85 |          0 |          4 |         89 |
+| c:\Users\21365\Desktop\op\server\uploads\1716045012580-file1.csv                   | CSV            |         85 |          0 |          4 |         89 |
+| c:\Users\21365\Desktop\op\server\uploads\1716045039939-file1.csv                   | CSV            |         85 |          0 |          4 |         89 |
+| c:\Users\21365\Desktop\op\server\uploads\1716045660510-file.csv                    | CSV            |         31 |          0 |          1 |         32 |
+| c:\Users\21365\Desktop\op\server\uploads\1716045826528-file.csv                    | CSV            |         31 |          0 |          1 |         32 |
+| c:\Users\21365\Desktop\op\server\uploads\1716045945626-file.csv                    | CSV            |         31 |          0 |          1 |         32 |
+| c:\Users\21365\Desktop\op\server\uploads\1716046008138-file.csv                    | CSV            |         31 |          0 |          1 |         32 |
+| c:\Users\21365\Desktop\op\server\uploads\1716046187145-file.csv                    | CSV            |         31 |          0 |          1 |         32 |
+| c:\Users\21365\Desktop\op\server\uploads\1716046750472-file.csv                    | CSV            |         31 |          0 |          1 |         32 |
+| c:\Users\21365\Desktop\op\server\uploads\1716046829643-file.csv                    | CSV            |         31 |          0 |          1 |         32 |
+| c:\Users\21365\Desktop\op\server\uploads\1716397429888-file.csv                    | CSV            |         11 |          0 |          1 |         12 |
+| c:\Users\21365\Desktop\op\server\uploads\1716397464013-file.csv                    | CSV            |         31 |          0 |          1 |         32 |
+| c:\Users\21365\Desktop\op\server\uploads\1716397505179-file.csv                    | CSV            |         31 |          0 |          1 |         32 |
+| c:\Users\21365\Desktop\op\server\uploads\1717065022965-file.csv                    | CSV            |         31 |          0 |          1 |         32 |
+| c:\Users\21365\Desktop\op\server\uploads\1717065086246-fiile.csv                   | CSV            |          3 |          0 |          1 |          4 |
+| c:\Users\21365\Desktop\op\server\uploads\1717065138135-fiile.csv                   | CSV            |          3 |          0 |          1 |          4 |
+| c:\Users\21365\Desktop\op\server\uploads\1717073985547-fiile.csv                   | CSV            |          3 |          0 |          1 |          4 |
+| c:\Users\21365\Desktop\op\server\uploads\1717074050837-fiile.csv                   | CSV            |          3 |          0 |          1 |          4 |
+| c:\Users\21365\Desktop\op\server\uploads\1717074249597-fiile.csv                   | CSV            |          3 |          0 |          1 |          4 |
+| c:\Users\21365\Desktop\op\server\uploads\fiile.csv                                 | CSV            |          3 |          0 |          1 |          4 |
+| c:\Users\21365\Desktop\op\server\uploads\file.csv                                  | CSV            |         31 |          0 |          1 |         32 |
+| Total                                                                              |                |      2,873 |        310 |        502 |      3,685 |
++------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+

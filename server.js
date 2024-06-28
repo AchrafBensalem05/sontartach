@@ -70,6 +70,11 @@ const Manufold = require("./app/models/manufold")
 const inspectionRoutes= require('./app/routes/inspection.routes')
 const authentication= require('./app/routes/auth.routes');
 const junctionRoutes= require('./app/routes/junction.routes')
+const epNoteRoutes= require('./app/routes/epnote.routes')
+const inspectionDepReport= require('./app/routes/inpectionDepReport.routes')
+const evaluation= require('./app/routes/evaluation.routes')
+const construction= require('./app/routes/construction.routes')
+const constructionStatus= require('./app/routes/ConstructionRaportStatus.routes')
 
 // Use the wellRoutes for handling well-related routes
 app.use('/pipe',pipeRoutes)
@@ -79,22 +84,28 @@ app.use('/inspection', inspectionRoutes);
 app.use('/telemetry',telemetryRoutes)
 app.use('/auth', authentication);
 app.use('/junction',junctionRoutes)
+app.use('/epnote',epNoteRoutes)
+app.use('/inpectionReport',inspectionDepReport)
+app.use('/evaluation',evaluation)
+app.use('/construction',construction)
+app.use('/constructionStatus',constructionStatus)
 
 
-cron.schedule('*/100 * * * *', async () => {
+
+cron.schedule('* * * * *', async () => {
   try {
-      const telemetryData = {
-          ID: '6633d0ebb0710cd83a14a0d0',
-          date: new Date(),
-          attributes: [
-              {name:"pressure", value: Math.random()*10+20},// Your pressure data,
-              {name:"temperature", value:Math.random()*10+20} // Your temperature data
-          ]
-      };
-      await axios.post('http://localhost:8080/telemetry/create', telemetryData);
-      console.log('Telemetry data sent successfully.');
+    const telemetryData = {
+      ID: '6633d0ebb0710cd83a14a0d0',
+      date: new Date(),
+      attributes: [
+        { name: "pressure", value: Math.random() * 10 + 20 }, // Your pressure data
+        { name: "temperature", value: Math.random() * 10 + 20 } // Your temperature data
+      ]
+    };
+    await axios.post('http://localhost:8080/telemetry/create', telemetryData);
+    console.log('Telemetry data sent successfully.');
   } catch (err) {
-      console.error('Error sending telemetry data:', err);
+    console.error('Error sending telemetry data:', err);
   }
 });
 

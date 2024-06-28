@@ -20,7 +20,7 @@ Content-Type: application/json
 
 
 ###
-GET http://localhost:8080/api/test/admin
+GET http://localhost:8080/manifold/download/66632d09e11d5a6c3d96d129
 #########
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NDliOWEzNzA0NzNmYzI4ODMxZmUzNiIsImlhdCI6MTcxNjEyMjY0MywiZXhwIjoxNzE2MjA5MDQzfQ.ihscKgv1KRItXafdfOOlLRrCLCyEg0t0tR6d73xTVAw
 #################

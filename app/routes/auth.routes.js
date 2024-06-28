@@ -21,5 +21,6 @@ router.post('/users/signin', (req, res, next) => {
   authController.signin(req, res, next);
 
 });
+router.get('/:id', authController.getUser);
 
 module.exports = router;

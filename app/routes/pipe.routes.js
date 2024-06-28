@@ -9,13 +9,13 @@ const router = express.Router();
 router.post('/create-pipe', pipeController.createPipe);
 
 // Route to get all Pipes
-router.get('/' , pipeController.getAllPipes);
+router.get('/getAll' , pipeController.getAllPipes);
 
 // Route to get all segments by Pipe ID
-router.get('/:id/segments', authenticateToken.authenticateToken, pipeController.getSegmentsByPipeId);
+router.get('/:id/segments', pipeController.getSegmentsByPipeId);
 
 // Route to get a specific Pipe by ID
-router.get('/:id', authenticateToken.authenticateToken, pipeController.getPipeById);
+router.get('/:id', pipeController.getPipeById);
 
 // Route to update a Pipe by ID
 router.patch('/:id', authenticateToken.authenticateToken, authenticateToken.isPipeAdmin, pipeController.updatePipe);

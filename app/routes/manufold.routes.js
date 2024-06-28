@@ -13,6 +13,9 @@ router.post('/create-manifold',upload.fields([{name: 'file', maxCount: 2},{name:
 router.get('/getAll', manufoldController.getAllManufolds);
 
 // Route to get a specific manufold by ID
+
+router.get('/download/:id', manufoldController.downloadFiles);
+
 router.get('/:id', manufoldController.getManufoldById);
 
 // Route to update a manufold by ID

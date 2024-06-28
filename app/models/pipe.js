@@ -10,7 +10,8 @@ const pipeSchema = new mongoose.Schema({
   length: { type: Number , required:true},
   connectionType: { type: String, enum: connection, default: 'direct' }, 
   type: { type: String, enum: type, default: 'collect' }, 
-  nature: { type: String, enum: nature, default:'oil' }
+  nature: { type: String, enum: nature, default:'oil' },
+  elevations: [{ type: Number }] 
 });
 
 const Pipe = mongoose.model('Pipe', pipeSchema);

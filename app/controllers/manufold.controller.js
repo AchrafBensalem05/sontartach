@@ -258,9 +258,40 @@ const updateManufoldById = async (req, res) => {
   }
 };
 
+
+const downloadFiles = async (req, res) => {
+  console.log("rrrrrrrrrrrrrr");
+  const { fileType } = req.query;
+  const { id } = req.params;
+  console.log('staaaaaaaartt', id);
+  try {
+    const manufold = await Manufold.findById(id);
+    if (!manufold || !manufold.file) {
+      return res.status(404).send({ message: 'File not found' });
+    }
+    console.log(manufold.file,'fiiiiiiiiiiiiiiiile')
+    
+    const filePath = path.join(manufold[fileType]);
+    console.log('looooooooooooove',filePath)
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send({ message: 'File not found' });
+    }
+    console.log("ccoooooooooooooooo",filePath)
+
+    res.download(filePath, err => {
+      if (err) {
+        res.status(500).send({ message: err.message });
+      }
+    });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
 module.exports = {
   createManufold,
   getAllManufolds,
   getManufoldById,
   updateManufoldById,
+  downloadFiles
 };

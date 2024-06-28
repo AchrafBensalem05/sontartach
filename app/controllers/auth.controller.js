@@ -31,7 +31,7 @@ exports.signup = async (req, res) => {
       expiresIn: 86400,
     });
     res.cookie("jwt", token, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: maxAge * 1000,
       sameSite: "none", // Set the SameSite attribute to 'none'
       secure: false,
@@ -86,5 +86,20 @@ exports.signin = async (req, res) => {
   } catch (error) {
     console.error("Error in signup:", error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.getUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('amaaaaaaaaaaaaaani',id)
+
+    const user = await User.findById(id)
+    console.log('amaaaaaaaaaaaaaani',user)
+    res.status(201).json({ user });
+  } catch (error) {
+
+    console.error("Error fetching Inspections:", error);
+    res.status(500).json({ error: "Failed to fetch Inspections" });
   }
 };

@@ -4,12 +4,16 @@ const Coord = require("../models/coord");
 const PipeSegment = require("../models/pipeSegment"); // Adjust the path as per your project structure
 const Infrastracture = require("../models/infrastracture"); // Import the Infrastracture model
 const PipeStatus = require("../models/pipeStatus");
-const multer = require('multer');
-const csv = require('csv-parser');
-const fs = require('fs');
-const express = require('express');
+const multer = require("multer");
+const csv = require("csv-parser");
+const fs = require("fs");
+const express = require("express");
 const { ConnectionPoolClosedEvent } = require("mongodb");
 const { log } = require("console");
+const Well = require("../models/well");
+const Manufold = require("../models/manufold");
+const Junction = require("../models/junction");
+
 // Controller function to handle creating a new Pipe
 // const createPipe = async (req, res) => {
 //   try {
@@ -52,12 +56,21 @@ const { log } = require("console");
 // Controller function to handle creating a new Pipe
 const createPipe = async (req, res) => {
   try {
-    const {result, segments} = req.body;
+    const { result, segments,elevations } = req.body;
     console.log("kkkkkk", result);
 
     // Extract data from the request body
-    const { from_id, to_id, connectionType, type,date, nature,newTotalDistance,coords } = result;
-    console.log("oiiiiiiiiiiiiiii",segments)
+    const {
+      from_id,
+      to_id,
+      connectionType,
+      type,
+      date,
+      nature,
+      newTotalDistance,
+      coords,
+    } = result;
+    console.log("oiiiiiiiiiiiiiii", segments);
     // for (const segmentData of segments) {
     //   console.log('segmeeeeeeeeeeeeeeeent',segmentData)
     //   const { coords, attributes } = segmentData;
@@ -68,12 +81,13 @@ const createPipe = async (req, res) => {
     //   return res.status(400).json({ error: 'Invalid ObjectId provided' });
     // }
 
-    // Check if the Infrastracture documents with the provided IDs exist
-    // const fromInfrastracture = await Infrastracture.findById(from_id);
-    // const toInfrastracture = await Infrastracture.findById(to_id);
-    // if (!fromInfrastracture || !toInfrastracture) {
-    //   return res.status(404).json({ error: 'Infrastracture document not found' });
-    // }
+    const fromInfrastracture = await Infrastracture.findById(from_id);
+    const toInfrastracture = await Infrastracture.findById(to_id);
+    if (!fromInfrastracture || !toInfrastracture) {
+      return res
+        .status(404)
+        .json({ error: "Infrastracture document not found" });
+    }
     // Function to create or find existing coordinates
     const createOrFindCoord = async (coordData) => {
       const { longitude, latitude } = coordData;
@@ -100,23 +114,24 @@ const createPipe = async (req, res) => {
 
     // Create a new Pipe document
     const newPipe = new Pipe({
-      from_id: '5f9f1b9b9c9d440000e51e6b',
-      to_id: '5f9f1b9b9c9d440000e51e6c',
-      coord_ids:coord_ids,
-      length:newTotalDistance,
+      from_id: fromInfrastracture._id,
+      to_id: toInfrastracture._id,
+      coord_ids: coord_ids,
+      length: newTotalDistance,
       connectionType,
-      type:'collect',
-      nature:'oil',
+      type: "collect",
+      nature: "oil",
+      elevations:elevations
     });
 
     // Save the new Pipe document to the database
     const savedPipe = await newPipe.save();
     // Create segments for the pipeµ
-    console.log('raaaaaaaaaaaaaaaaaaaaan')
+    console.log("raaaaaaaaaaaaaaaaaaaaan");
     const createSegments = async () => {
       const createdSegments = [];
       for (const segmentData of segments) {
-        console.log('segmeeeeeeeeeeeeeeeent222222222211111111111',segmentData)
+        console.log("segmeeeeeeeeeeeeeeeent222222222211111111111", segmentData);
         const { coords, attributes } = segmentData;
         const coordIds = await Promise.all(coords.map(createOrFindCoord));
 
@@ -137,7 +152,7 @@ const createPipe = async (req, res) => {
     const createdSegments = await createSegments();
 
     res.status(201).json({ pipe: savedPipe, segments: createdSegments });
-    console.log('wooooooorks')
+    console.log("wooooooorks");
   } catch (error) {
     console.error("Error creating Pipe:", error);
     res.status(500).json({ error: "Failed to create Pipe and Segments" });
@@ -147,14 +162,41 @@ const createPipe = async (req, res) => {
 // Controller function to get all Pipes
 const getAllPipes = async (req, res) => {
   try {
-    const pipes = await Pipe.find();
-    res.status(200).json(pipes);
+    const pipes = await Pipe.find()
+      .populate({
+        path: "from_id",
+        model: "Infrastracture",
+      })
+      .populate({
+        path: "to_id",
+        model: "Infrastracture",
+      })
+      .populate({
+        path: "coord_ids",
+        model: "Coord",
+        populate: {
+          path: "idAdr",
+          model: "Address",
+        },
+      });
+
+    const transformedPipes = pipes.map((pipe) => {
+      const coords = pipe.coord_ids.map((coord) => [
+        coord.latitude,
+        coord.longitude,
+      ]);
+      return {
+        _id: pipe._id,
+        name: pipe.length,
+        coords,
+      };
+    });
+    res.status(200).json(transformedPipes);
   } catch (error) {
     console.error("Error getting Pipes:", error);
     res.status(500).json({ error: "Failed to get Pipes" });
   }
 };
-
 
 const createPipeStatus = async (status, date, savedPipe) => {
   if (status) {
@@ -169,13 +211,13 @@ const createPipeStatus = async (status, date, savedPipe) => {
 
 const createPipeStatusHistory = async (req, res) => {
   try {
-    console.log(req.file,req.params)
+    console.log(req.file, req.params);
     if (!req.file || !req.file.path) {
       throw new Error("CSV file not uploaded or invalid file path.");
     }
 
     const { pipeId } = req.params;
-    log(req.params)
+    log(req.params);
     if (!req.params) {
       throw new Error("Pipe ID not provided.");
     }
@@ -190,7 +232,7 @@ const createPipeStatusHistory = async (req, res) => {
         const statusData = {
           pipe_id: pipeId,
           status: row.status,
-          date: new Date(row.status_date)
+          date: new Date(row.status_date),
         };
 
         statuses.push(statusData);
@@ -205,7 +247,12 @@ const createPipeStatusHistory = async (req, res) => {
           }
 
           console.log("Successfully added pipe statuses:", savedStatuses);
-          res.status(201).json({ message: "Pipe statuses added successfully", statuses: savedStatuses });
+          res
+            .status(201)
+            .json({
+              message: "Pipe statuses added successfully",
+              statuses: savedStatuses,
+            });
         } catch (error) {
           console.error("Error adding pipe statuses:", error);
           res.status(500).json({ error: "Failed to add pipe statuses" });
@@ -225,11 +272,87 @@ const createPipeStatusHistory = async (req, res) => {
 const getPipeById = async (req, res) => {
   const { id } = req.params;
   try {
-    const pipe = await Pipe.findById(id);
+    const pipe = await Pipe.findById(id)
+      .populate({
+        path: "from_id",
+        model: "Infrastracture",
+      })
+      .populate({
+        path: "to_id",
+        model: "Infrastracture",
+      })
+      .populate({
+        path: "coord_ids",
+        model: "Coord",
+        populate: {
+          path: "idAdr",
+          model: "Address",
+        },
+      });
     if (!pipe) {
       return res.status(404).json({ error: "Pipe not found" });
     }
-    res.status(200).json(pipe);
+    const to = pipe.to_id.ID;
+    const from = pipe.from_id.ID;
+    const fromDetails =
+      (await Well.findOne({ from }).populate({
+        path: "ID",
+        model: "Infrastracture",
+        populate: {
+          path: "coord_id",
+          model: "Coord",
+        },
+      })
+      ) ||
+       (await Manufold.findOne({ from }).populate({
+        path: "ID",
+        model: "Infrastracture",
+        populate: {
+          path: "coord_id",
+          model: "Coord",
+        },
+      })
+      );
+    const toDetails =
+      (await Manufold.findOne({ to }).populate({
+        path: "ID",
+        model: "Infrastracture",
+        populate: {
+          path: "coord_id",
+          model: "Coord",
+        },
+
+      })
+) || (await Junction.findOne({ to }).populate({
+        path: "ID",
+        model: "Infrastracture",
+        populate: {
+          path: "coord_id",
+          model: "Coord",
+        },
+      })
+     );
+    console.log("toooooooooooooooooovvvvvvvvvvvvvvvvvvvvvvv", pipe);
+
+    const coords = pipe.coord_ids.map((coord) => [
+      coord.latitude,
+      coord.longitude,
+    ]);
+    const pipedetails = {
+      _id: pipe._id,
+      length: pipe.length,
+      connectionType: pipe.connectionType,
+      type: pipe.type,
+      nature: pipe.nature,
+      fromDetails,
+      toDetails,
+      coords,
+      elevations:pipe.elevations
+    };
+
+    console.log("piiiiiiiiiiiiiiiiipe", pipedetails);
+
+    res.status(200).json(pipedetails);
   } catch (error) {
     console.error("Error getting Pipe by ID:", error);
     res.status(500).json({ error: "Failed to get Pipe" });
@@ -300,7 +423,7 @@ const updatePipe = async (req, res) => {
     };
 
     const updatedSegments = await createOrUpdateSegments();
-
+    
     res.status(200).json({ pipe: existingPipe, segments: updatedSegments });
   } catch (error) {
     console.error("Error updating Pipe:", error);
@@ -324,7 +447,11 @@ const getSegmentsByPipeId = async (req, res) => {
     }
 
     // Find all segments related to the Pipe ID
-    const segments = await PipeSegment.find({ pipeId });
+    const segments = await PipeSegment.find({ pipeId }).populate({
+      path: "coor_id",
+      model: "Coord",
+    });
+    console.log("wiaaaaaaaam", segments);
 
     res.status(200).json(segments);
   } catch (error) {
@@ -347,8 +474,7 @@ const deletePipeById = async (req, res) => {
   }
 };
 
-
-const upload = multer({ dest: 'uploads/' }); // Define storage for multer
+const upload = multer({ dest: "uploads/" }); // Define storage for multer
 
 const createMultiplePipeStatuses = async (req, res) => {
   const { id } = req.params;
@@ -362,17 +488,19 @@ const createMultiplePipeStatuses = async (req, res) => {
 
   fs.createReadStream(file.path)
     .pipe(csv())
-    .on('data', (row) => {
+    .on("data", (row) => {
       const { status, status_date } = row;
       if (status && status_date) {
-        pipeStatuses.push(new PipeStatus({
-          pipe_id: id,
-          status,
-          date: new Date(status_date),
-        }));
+        pipeStatuses.push(
+          new PipeStatus({
+            pipe_id: id,
+            status,
+            date: new Date(status_date),
+          })
+        );
       }
     })
-    .on('end', async () => {
+    .on("end", async () => {
       try {
         const savedStatuses = await PipeStatus.insertMany(pipeStatuses);
         return res.status(201).json(savedStatuses);
@@ -392,5 +520,5 @@ module.exports = {
   deletePipeById,
   getSegmentsByPipeId,
   createPipeStatusHistory,
-  createMultiplePipeStatuses 
+  createMultiplePipeStatuses,
 };
