@@ -29,8 +29,8 @@ var corsOptions = {
 };
 
 // parse requests of content-type - application/json
-app.use(bodyParser.json({limit: '30mb', extended: true}));
-app.use(bodyParser.urlencoded({limit: '30mb', extended: true}));
+app.use(bodyParser.json({ limit: '30mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors(corsOptions));
 
 // parse requests of content-type - application/x-www-form-urlencoded
@@ -62,22 +62,18 @@ app.get("/", (req, res) => {
 require("./app/routes/user.routes")(app);
 
 const wellRoutes = require('./app/routes/well.routes');
-const Well = require('./app/models/well');
 const telemetryRoutes = require('./app/routes/telemetry.routes');
-const telemetry = require('./app/models/telemetry');
 const pipeRoutes = require('./app/routes/pipe.routes');
-const Pipe = require('./app/models/pipe');
 const manufoldRoutes = require('./app/routes/manufold.routes');
-const Manufold = require("./app/models/manufold");
-const inspectionRoutes= require('./app/routes/inspection.routes');
-const authentication= require('./app/routes/auth.routes');
-const junctionRoutes= require('./app/routes/junction.routes');
-const epNoteRoutes= require('./app/routes/epnote.routes');
-const inspectionDepReport= require('./app/routes/inpectionDepReport.routes');
-const evaluation= require('./app/routes/evaluation.routes');
-const construction= require('./app/routes/construction.routes');
-const constructionStatus= require('./app/routes/ConstructionRaportStatus.routes');
-const ouvrageStatus= require('./app/routes/ouvrageStatus.routes')
+const inspectionRoutes = require('./app/routes/inspection.routes');
+const authenticationRoutes = require('./app/routes/auth.routes');
+const junctionRoutes = require('./app/routes/junction.routes');
+const epNoteRoutes = require('./app/routes/epnote.routes');
+const inspectionDepReportRoutes = require('./app/routes/inpectionDepReport.routes');
+const evaluationRoutes = require('./app/routes/evaluation.routes');
+const constructionRoutes = require('./app/routes/construction.routes');
+const constructionStatusRoutes = require('./app/routes/ConstructionRaportStatus.routes');
+const ouvrageStatusRoutes = require('./app/routes/ouvrageStatus.routes');
 
 // Use the routes for handling related endpoints
 app.use('/pipe', pipeRoutes);
@@ -85,15 +81,15 @@ app.use('/well', wellRoutes);
 app.use('/manifold', manufoldRoutes);
 app.use('/inspection', inspectionRoutes);
 app.use('/telemetry', telemetryRoutes);
-app.use('/auth', authentication);
-app.use('/junction',junctionRoutes)
-app.use('/epnote',epNoteRoutes)
-app.use('/inpectionReport',inspectionDepReport)
-app.use('/evaluation',evaluation)
-app.use('/construction',construction)
-app.use('/constructionStatus',constructionStatus)
-app.use('/result',ouvrageStatus)
-
+app.use('/auth', authenticationRoutes);
+app.use('/junction', junctionRoutes);
+app.use('/epnote', epNoteRoutes);
+app.use('/inpectionReport', inspectionDepReportRoutes);
+app.use('/evaluation', evaluationRoutes);
+app.use('/construction', constructionRoutes);
+app.use('/constructionStatus', constructionStatusRoutes);
+app.use('/result', ouvrageStatusRoutes);
+app.use('/notifications', notificationRoutes);
 
 cron.schedule('* * * * *', async () => {
   try {
@@ -127,12 +123,12 @@ function initial() {
         if (err) {
           console.log("error", err);
         }
-        console.log("added 'user' to roles collection");
+        console.log("added 'viewer' to roles collection");
       });
 
       new Role({
         name: "pipeAdmin"
-      }).save(err => { 
+      }).save(err => {
         if (err) {
           console.log("error", err);
         }
