@@ -1,13 +1,15 @@
 const express = require("express");
 const cors = require("cors");
-var bodyParser = require('body-parser')
-
-const dbConfig = require("./app/config/db.config");
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const http = require('http');
+const mongoose = require('mongoose');
 const cron = require('node-cron');
 const axios = require('axios');
-const cookieParser = require('cookie-parser')
 const EventEmitter = require('events');
-
+const dbConfig = require("./app/config/db.config");
+const { initSocket } = require('./app/socket'); // Importing socket setup
+const notificationRoutes = require('./app/routes/notification.routes'); // Importing notification routes
 
 // Create an instance of EventEmitter
 const emitter = new EventEmitter();
@@ -15,9 +17,10 @@ const emitter = new EventEmitter();
 // Set the maximum number of listeners for the event emitter
 emitter.setMaxListeners(15); // Adjust the limit as per your needs
 
-// Now you can use the event emitter with increased listeners limit
-
 const app = express();
+const server = http.createServer(app);
+initSocket(server); // Initialize socket with server
+
 app.use(cookieParser());
 
 var corsOptions = {
@@ -26,8 +29,8 @@ var corsOptions = {
 };
 
 // parse requests of content-type - application/json
-app.use(bodyParser.json({limit: '30mb',extended: true}));
-app.use(bodyParser.urlencoded({limit: '30mb',extended: true}));
+app.use(bodyParser.json({limit: '30mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: '30mb', extended: true}));
 app.use(cors(corsOptions));
 
 // parse requests of content-type - application/x-www-form-urlencoded
@@ -36,13 +39,13 @@ app.use(express.urlencoded({ extended: true }));
 const db = require("./app/models");
 const Role = db.role;
 
-db.mongoose
+mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
   .then(() => {
-    console.log("Successfully connect to MongoDB.");
+    console.log("Successfully connected to MongoDB.");
     initial();
   })
   .catch(err => {
@@ -57,40 +60,39 @@ app.get("/", (req, res) => {
 
 // routes
 require("./app/routes/user.routes")(app);
-// require("./app/routes/well.routes")
 
 const wellRoutes = require('./app/routes/well.routes');
-const Well = require('./app/models/well'); // Import the Well model
-const telemetryRoutes = require('./app/routes/telemetry.routes')
-const telemetry = require('./app/models/telemetry')
-const pipeRoutes = require('./app/routes/pipe.routes'); // Import the wellRoutes
+const Well = require('./app/models/well');
+const telemetryRoutes = require('./app/routes/telemetry.routes');
+const telemetry = require('./app/models/telemetry');
+const pipeRoutes = require('./app/routes/pipe.routes');
 const Pipe = require('./app/models/pipe');
-const manufoldRoutes = require('./app/routes/manufold.routes')
-const Manufold = require("./app/models/manufold")
-const inspectionRoutes= require('./app/routes/inspection.routes')
+const manufoldRoutes = require('./app/routes/manufold.routes');
+const Manufold = require("./app/models/manufold");
+const inspectionRoutes= require('./app/routes/inspection.routes');
 const authentication= require('./app/routes/auth.routes');
-const junctionRoutes= require('./app/routes/junction.routes')
-const epNoteRoutes= require('./app/routes/epnote.routes')
-const inspectionDepReport= require('./app/routes/inpectionDepReport.routes')
-const evaluation= require('./app/routes/evaluation.routes')
-const construction= require('./app/routes/construction.routes')
-const constructionStatus= require('./app/routes/ConstructionRaportStatus.routes')
+const junctionRoutes= require('./app/routes/junction.routes');
+const epNoteRoutes= require('./app/routes/epnote.routes');
+const inspectionDepReport= require('./app/routes/inpectionDepReport.routes');
+const evaluation= require('./app/routes/evaluation.routes');
+const construction= require('./app/routes/construction.routes');
+const constructionStatus= require('./app/routes/ConstructionRaportStatus.routes');
 
-// Use the wellRoutes for handling well-related routes
-app.use('/pipe',pipeRoutes)
+// Use the routes for handling related endpoints
+app.use('/pipe', pipeRoutes);
 app.use('/well', wellRoutes);
-app.use('/manifold',manufoldRoutes);
+app.use('/manifold', manufoldRoutes);
 app.use('/inspection', inspectionRoutes);
-app.use('/telemetry',telemetryRoutes)
+app.use('/telemetry', telemetryRoutes);
 app.use('/auth', authentication);
-app.use('/junction',junctionRoutes)
-app.use('/epnote',epNoteRoutes)
-app.use('/inpectionReport',inspectionDepReport)
-app.use('/evaluation',evaluation)
-app.use('/construction',construction)
-app.use('/constructionStatus',constructionStatus)
+app.use('/junction', junctionRoutes);
+app.use('/epnote', epNoteRoutes);
+app.use('/inpectionReport', inspectionDepReport);
+app.use('/evaluation', evaluation);
+app.use('/construction', construction);
+app.use('/constructionStatus', constructionStatus);
 
-
+app.use('/notifications', notificationRoutes);
 
 cron.schedule('* * * * *', async () => {
   try {
@@ -111,7 +113,7 @@ cron.schedule('* * * * *', async () => {
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
@@ -124,7 +126,6 @@ function initial() {
         if (err) {
           console.log("error", err);
         }
-
         console.log("added 'user' to roles collection");
       });
 
@@ -134,7 +135,6 @@ function initial() {
         if (err) {
           console.log("error", err);
         }
-
         console.log("added 'pipeAdmin' to roles collection");
       });
 
@@ -144,34 +144,26 @@ function initial() {
         if (err) {
           console.log("error", err);
         }
-
         console.log("added 'wellAdmin' to roles collection");
       });
+
       new Role({
         name: "manufoldAdmin"
       }).save(err => {
         if (err) {
           console.log("error", err);
         }
-
         console.log("added 'manufoldAdmin' to roles collection");
       });
+
       new Role({
         name: "inspectionAdmin"
       }).save(err => {
         if (err) {
           console.log("error", err);
         }
-
         console.log("added 'inspectionAdmin' to roles collection");
       });
     }
   });
-      
 }
-
-
-
-
-
-

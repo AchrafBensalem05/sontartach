@@ -1,11 +1,14 @@
-POST http://localhost:8080/auth/signup
+POST http://localhost:8080/auth/users/signup
 Content-Type: application/json
 
 {
-    "username":"achrsausfsbb",
+    "nom":"achrsausfsbb",
     "email":"achrafu@gsmssail.com",
     "password":"helloworld",
-    "roles":["wellAdmin"]
+    "prenom": "prenom",
+    "position": "position",
+    "departement": "departement",
+    "role":"role"
 }
 
 ###
