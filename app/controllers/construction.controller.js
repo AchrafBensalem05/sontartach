@@ -59,9 +59,10 @@ const getConstruction = async (req, res) => {
     const construction = await Inspection.findById(id).populate({
       path: "constructionID",
       model: "Construction",
-    }).populate({
-      path: "user",
-      model: "User",
+      populate:{
+        path: "user",
+        model: "User",
+      }
     });
     console.log('amaaaaaaaaaaaaaani',construction)
     res.status(201).json({ construction });

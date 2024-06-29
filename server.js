@@ -77,6 +77,7 @@ const inspectionDepReport= require('./app/routes/inpectionDepReport.routes');
 const evaluation= require('./app/routes/evaluation.routes');
 const construction= require('./app/routes/construction.routes');
 const constructionStatus= require('./app/routes/ConstructionRaportStatus.routes');
+const ouvrageStatus= require('./app/routes/ouvrageStatus.routes')
 
 // Use the routes for handling related endpoints
 app.use('/pipe', pipeRoutes);
@@ -85,14 +86,14 @@ app.use('/manifold', manufoldRoutes);
 app.use('/inspection', inspectionRoutes);
 app.use('/telemetry', telemetryRoutes);
 app.use('/auth', authentication);
-app.use('/junction', junctionRoutes);
-app.use('/epnote', epNoteRoutes);
-app.use('/inpectionReport', inspectionDepReport);
-app.use('/evaluation', evaluation);
-app.use('/construction', construction);
-app.use('/constructionStatus', constructionStatus);
+app.use('/junction',junctionRoutes)
+app.use('/epnote',epNoteRoutes)
+app.use('/inpectionReport',inspectionDepReport)
+app.use('/evaluation',evaluation)
+app.use('/construction',construction)
+app.use('/constructionStatus',constructionStatus)
+app.use('/result',ouvrageStatus)
 
-app.use('/notifications', notificationRoutes);
 
 cron.schedule('* * * * *', async () => {
   try {

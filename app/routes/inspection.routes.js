@@ -9,4 +9,6 @@ router.post('/create', inspectionController.createInspection);
 router.get('/getAll', inspectionController.getAllInspections);
 
 
+router.get('/stats', inspectionController.getStats);
+
 module.exports = router;

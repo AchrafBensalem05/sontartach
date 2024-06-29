@@ -5,7 +5,8 @@ async function getNextId(docType) {
     'ep_note': { min: 1001, max: 2000 },
     'inspection_report': { min: 1, max: 1000 },
     'evaluation': { min: 3001, max: 4000 },
-    'construction': { min: 4001, max: 5000 }
+    'construction': { min: 4001, max: 5000 },
+    'result': { min: 5001, max: 6000 }
 
     // Add other document types and their ranges here
   };

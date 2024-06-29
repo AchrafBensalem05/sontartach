@@ -57,9 +57,10 @@ const getEvaluation = async (req, res) => {
     const inspectionEvaluation = await Inspection.findById(id).populate({
       path: "evaluationID",
       model: "Evaluation",
-    }).populate({
-      path: "user",
-      model: "User",
+      populate:{
+        path: "user",
+        model: "User",
+      }
     });
     console.log("amaaaaaaaaaaaaaani", inspectionEvaluation);
     res.status(201).json({ inspectionEvaluation });

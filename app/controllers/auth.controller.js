@@ -72,7 +72,7 @@ exports.signin = async (req, res) => {
       expiresIn: 86400, // 24 hours
     });
     res.cookie("jwt", token, {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: maxAge * 1000,
       sameSite: "none", // Set the SameSite attribute to 'none'
       secure: false,
