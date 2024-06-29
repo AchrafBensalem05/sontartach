@@ -11,7 +11,7 @@ const createEpNote = async (req, res) => {
 
   try {
     const specialId = await getNextId('ep_note');
-    const { ouvrage, type, message, pv_file, email,user } = req.body;
+    const { ouvrage, type, message, pv_file,user } = req.body;
     console.log("foooooooooooooooooo");
     const filePath = req.file.path;
     console.log("pvvvvvvvvvvvvvvvv", filePath);
@@ -63,8 +63,8 @@ const getEpNote = async (req, res) => {
     console.log(ouvrageID, "ooooooooooo");
     const ouvrage =
       (await Well.findById( ouvrageID )) ||
-      (await Manufold.findOne( ouvrageID )) ||
-      (await Pipe.findOne( ouvrageID ));
+      (await Manufold.findById( ouvrageID )) ||
+      (await Pipe.findById( ouvrageID ));
 
     console.log("tyyyyyyyyyyy", ouvrage);
     console.log("iiiiiiooooooo", inspection);

@@ -55,9 +55,10 @@ const getInspectionDepReport = async (req, res) => {
     const inspectionReport = await Inspection.findById(id).populate({
       path: "Ins_reportID",
       model: "InspectionDepReport",
-    }).populate({
-      path: "user",
-      model: "User",
+      populate:{
+        path: "user",
+        model: "User",
+      }
     });
     console.log('amaaaaaaaaaaaaaani',inspectionReport)
     res.status(201).json({ inspectionReport });

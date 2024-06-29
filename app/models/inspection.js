@@ -8,6 +8,7 @@ const inspectionSchema = new mongoose.Schema({
   status:{type: String},
   observation: { type: String },
   user:{ type:mongoose.Schema.Types.ObjectId,ref:'User'},
+  type:{type: String},
   ep_noteID: { type:mongoose.Schema.Types.ObjectId,ref:'EpNote'},
   Ins_reportID: { type:mongoose.Schema.Types.ObjectId,ref:'InspectionDepReport'},
   evaluationID: { type:mongoose.Schema.Types.ObjectId,ref:'Evaluation'},

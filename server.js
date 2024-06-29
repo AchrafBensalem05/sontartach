@@ -75,6 +75,7 @@ const inspectionDepReport= require('./app/routes/inpectionDepReport.routes')
 const evaluation= require('./app/routes/evaluation.routes')
 const construction= require('./app/routes/construction.routes')
 const constructionStatus= require('./app/routes/ConstructionRaportStatus.routes')
+const ouvrageStatus= require('./app/routes/ouvrageStatus.routes')
 
 // Use the wellRoutes for handling well-related routes
 app.use('/pipe',pipeRoutes)
@@ -89,7 +90,7 @@ app.use('/inpectionReport',inspectionDepReport)
 app.use('/evaluation',evaluation)
 app.use('/construction',construction)
 app.use('/constructionStatus',constructionStatus)
-
+app.use('/result',ouvrageStatus)
 
 
 cron.schedule('* * * * *', async () => {
