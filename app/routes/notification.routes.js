@@ -16,13 +16,12 @@ router.post('/sms', (req, res) => {
   res.status(201).json({ message: 'SMS sent' });
 });
 
+const { sendNotification, getUserNotifications, getNotification } = require('../controllers/notification.controller');
 
-const { sendNotification, getNotifications } = require('../controllers/notification.controller');
-
-
-
-router.post('/notifications', sendNotification);
-router.get('/', getNotifications);
+router.post('/send', sendNotification);
+router.get('/user/:userId', getUserNotifications);
+router.get('/',getNotification)
 
 module.exports = router;
+
 

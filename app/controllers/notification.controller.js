@@ -1,14 +1,15 @@
-const Notification = require('../models/Notification');
+const Notification = require('../models/notification');
 const { getIo } = require('../socket');
 
 const sendNotification = async (req, res) => {
   try {
-    const { message } = req.body;
-    const notification = new Notification({ message });
+    const { message, userId } = req.body;
+    const notification = new Notification({ message, userId });
     await notification.save();
 
     const io = getIo();
-    io.emit('notification', message);
+    console.log(`Sending notification to user ${userId}: ${message}`);
+    io.to(userId.toString()).emit('notification', message);
 
     res.status(201).json(notification);
   } catch (error) {
@@ -16,13 +17,23 @@ const sendNotification = async (req, res) => {
   }
 };
 
-const getNotifications = async (req, res) => {
+const getUserNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find().sort({ createdAt: -1 }); // Sort by most recent
+    const { userId } = req.params;
+    console.log(`Fetching notifications for user ${userId}`);
+    const notifications = await Notification.find({ userId });
     res.status(200).json(notifications);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch notifications' });
   }
 };
+const getNotification = async (req,res) =>{
+  const notifications= await Notification.find();
+  res.status(200).json(notifications)
+}
 
-module.exports = { sendNotification, getNotifications };
+
+
+
+
+module.exports = { sendNotification, getNotification, getUserNotifications };
